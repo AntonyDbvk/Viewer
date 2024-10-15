@@ -10,7 +10,8 @@ namespace Viewer
         private ViewerViewModel viewModel;
         private bool isDragging = false;
         private Point startPosition;
-        private ComboBox shapeSelector; 
+        private ComboBox shapeSelector;
+        private ComboBox projectionSelector;
 
         public Form1()
         {
@@ -37,6 +38,15 @@ namespace Viewer
             shapeSelector.SelectedIndex = 0; 
             shapeSelector.SelectedIndexChanged += OnShapeSelected;
             this.Controls.Add(shapeSelector);
+
+            projectionSelector = new ComboBox();
+            projectionSelector.Location = new Point(10, 40); 
+            projectionSelector.DropDownStyle = ComboBoxStyle.DropDownList;
+            projectionSelector.Items.Add("Ортогональная");
+            projectionSelector.Items.Add("Перспективная");
+            projectionSelector.SelectedIndex = 1; 
+            projectionSelector.SelectedIndexChanged += OnProjectionSelected;
+            this.Controls.Add(projectionSelector);
         }
 
         private void OnResize(object sender, EventArgs e)
@@ -86,6 +96,12 @@ namespace Viewer
         private void OnMouseUp(object sender, MouseEventArgs e)
         {
             isDragging = false;
+        }
+
+        private void OnProjectionSelected(object sender, EventArgs e)
+        {
+            viewModel.IsOrthogonal = projectionSelector.SelectedIndex == 0; 
+            Invalidate(); 
         }
     }
 }

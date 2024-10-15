@@ -9,6 +9,7 @@ namespace Viewer.ViewModel
         public Shape3D CurrentShape { get; private set; }
 
         private Shape3D[] shapes;  // все фигуры
+        public bool IsOrthogonal { get; set; }
 
         public ViewerViewModel()
         {
@@ -48,7 +49,7 @@ namespace Viewer.ViewModel
         public void Draw(Graphics g, Size clientSize)
         {
             Pen pen = new Pen(Color.Black, 2);
-            CurrentShape.Draw(g, pen, _camera, clientSize);
+            CurrentShape.Draw(g, pen, _camera, clientSize,IsOrthogonal);
         }
     }
 }

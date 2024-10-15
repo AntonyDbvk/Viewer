@@ -27,13 +27,13 @@ namespace Viewer.Model
             { 0, 4 }, { 1, 5 }, { 2, 6 }, { 3, 7 }
         };
 
-        public override void Draw(Graphics g, Pen pen, Camera camera, Size clientSize)
+        public override void Draw(Graphics g, Pen pen, Camera camera, Size clientSize, bool isOrthogonal)
         {
-            DrawCube(g, pen, outerVertices, camera, clientSize);
+            DrawCube(g, pen, outerVertices, camera, clientSize, isOrthogonal);
 
             // отрисовка внутреннего куба с красным цветом
             Pen innerPen = new Pen(Color.Red, 2);
-            DrawCube(g, innerPen, innerVertices, camera, clientSize);
+            DrawCube(g, innerPen, innerVertices, camera, clientSize, isOrthogonal);
 
             // соединяем вершины внешнего и внутреннего куба
             for (int i = 0; i < 8; i++)
@@ -46,15 +46,15 @@ namespace Viewer.Model
                 float y2 = innerVertices[i, 1];
                 float z2 = innerVertices[i, 2];
 
-                PointF p1 = camera.Project(x1, y1, z1, clientSize);
-                PointF p2 = camera.Project(x2, y2, z2, clientSize);
+                PointF p1 = camera.Project(x1, y1, z1, clientSize, isOrthogonal);
+                PointF p2 = camera.Project(x2, y2, z2, clientSize, isOrthogonal);
 
                 g.DrawLine(pen, p1, p2); // линии между точками
             }
         }
 
         // функция для отрисовки куба
-        private void DrawCube(Graphics g, Pen pen, float[,] vertices, Camera camera, Size clientSize)
+        private void DrawCube(Graphics g, Pen pen, float[,] vertices, Camera camera, Size clientSize,bool isOrthogonal)
         {
             for (int i = 0; i < edges.GetLength(0); i++)
             {
@@ -69,8 +69,8 @@ namespace Viewer.Model
                 float y2 = vertices[index2, 1];
                 float z2 = vertices[index2, 2];
 
-                PointF p1 = camera.Project(x1, y1, z1, clientSize);
-                PointF p2 = camera.Project(x2, y2, z2, clientSize);
+                PointF p1 = camera.Project(x1, y1, z1, clientSize, isOrthogonal);
+                PointF p2 = camera.Project(x2, y2, z2, clientSize, isOrthogonal);
 
                 g.DrawLine(pen, p1, p2);  // ребро куба
             }

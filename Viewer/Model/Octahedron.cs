@@ -20,7 +20,7 @@ namespace Viewer.Model
             { 2, 4 }, { 4, 3 }, { 3, 5 }, { 5, 2 }
         };
 
-        public override void Draw(Graphics g, Pen pen, Camera camera, Size clientSize)
+        public override void Draw(Graphics g, Pen pen, Camera camera, Size clientSize, bool isOrthogonal)
         {
             for (int i = 0; i < edges.GetLength(0); i++)
             {
@@ -35,8 +35,8 @@ namespace Viewer.Model
                 float y2 = vertices[index2, 1];
                 float z2 = vertices[index2, 2];
 
-                PointF p1 = camera.Project(x1, y1, z1, clientSize);
-                PointF p2 = camera.Project(x2, y2, z2, clientSize);
+                PointF p1 = camera.Project(x1, y1, z1, clientSize, isOrthogonal);
+                PointF p2 = camera.Project(x2, y2, z2, clientSize, isOrthogonal);
 
                 g.DrawLine(pen, p1, p2);
             }
