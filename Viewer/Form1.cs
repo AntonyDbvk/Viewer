@@ -21,7 +21,7 @@ namespace Viewer
             this.MouseMove += new MouseEventHandler(OnMouseMove);
             this.MouseUp += new MouseEventHandler(OnMouseUp);
             this.MouseWheel += new MouseEventHandler(OnMouseWheel);
-
+            this.Resize += new EventHandler(OnResize);
             viewModel = new ViewerViewModel();
             InitUI(); 
         }
@@ -39,7 +39,12 @@ namespace Viewer
             this.Controls.Add(shapeSelector);
         }
 
-        private void OnShapeSelected(object sender, EventArgs e)
+        private void OnResize(object sender, EventArgs e)
+        {
+            Invalidate(); // Перерисовка в соответствии с размерами окна 
+        }
+
+            private void OnShapeSelected(object sender, EventArgs e)
         {
             int selectedIndex = shapeSelector.SelectedIndex;
             viewModel.ChangeShape(selectedIndex);  // изменяем текущую фигуру в ViewModel
