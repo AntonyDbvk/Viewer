@@ -6,20 +6,21 @@ namespace Viewer
 {
     public partial class Form1 : Form
     {
-
+        // координаты вершин внешнего куба
         private float[,] outerCubeVertices = new float[,]
         {
             { -1, -1, -1 }, {  1, -1, -1 }, {  1,  1, -1 }, { -1,  1, -1 },
             { -1, -1,  1 }, {  1, -1,  1 }, {  1,  1,  1 }, { -1,  1,  1 }
         };
 
-
+        // координаты вершин внутреннего куба
         private float[,] innerCubeVertices = new float[,]
         {
             { -0.5f, -0.5f, -0.5f }, {  0.5f, -0.5f, -0.5f }, {  0.5f,  0.5f, -0.5f }, { -0.5f,  0.5f, -0.5f },
             { -0.5f, -0.5f,  0.5f }, {  0.5f, -0.5f,  0.5f }, {  0.5f,  0.5f,  0.5f }, { -0.5f,  0.5f,  0.5f }
         };
 
+        // ребра кубов
         private int[,] cubeEdges = new int[,]
         {
             { 0, 1 }, { 1, 2 }, { 2, 3 }, { 3, 0 },
@@ -27,10 +28,12 @@ namespace Viewer
             { 0, 4 }, { 1, 5 }, { 2, 6 }, { 3, 7 }
         };
 
+        // углы камеры
         private float cameraAngleX = 0;
         private float cameraAngleY = 0;
         private float cameraDistance = 5f;
 
+        // ограничение углов обзора
         private float minCameraAngleX = -1.5f; 
         private float maxCameraAngleX = 1.5f;  
 
@@ -48,12 +51,14 @@ namespace Viewer
             this.MouseUp += new MouseEventHandler(OnMouseUp);
         }
 
+        // начало движения мыши
         private void OnMouseDown(object sender, MouseEventArgs e)
         {
             startPosition = e.Location;
             isDragging = true;
         }
 
+        // движение мыши — поворот камеры
         private void OnMouseMove(object sender, MouseEventArgs e)
         {
             if (isDragging)
@@ -61,20 +66,23 @@ namespace Viewer
                 currentPosition = e.Location;
                 cameraAngleY -= (currentPosition.X - startPosition.X) * 0.01f;
 
-
+                
                 cameraAngleX -= (currentPosition.Y - startPosition.Y) * 0.01f;
-                cameraAngleX = Math.Max(minCameraAngleX, Math.Min(maxCameraAngleX, cameraAngleX));
+                cameraAngleX = Math.Max(minCameraAngleX, Math.Min(maxCameraAngleX, cameraAngleX));/* ограничиваем нижний и верхний угол для просмотра,
+                                                                                                   * дабы избежать непредсказуемого поведения при вращении камеры */
 
                 startPosition = currentPosition;
-                Invalidate(); 
+                Invalidate(); // перерисовываем
             }
         }
 
+ 
         private void OnMouseUp(object sender, MouseEventArgs e)
         {
             isDragging = false;
         }
 
+        // проекция 3D-координат в 2D
         private PointF Project(float x, float y, float z)
         {
             float cosX = (float)Math.Cos(cameraAngleX);
@@ -82,10 +90,14 @@ namespace Viewer
             float cosY = (float)Math.Cos(cameraAngleY);
             float sinY = (float)Math.Sin(cameraAngleY);
 
+            // поворачиваем по оси Y
             float dx = x * cosY - z * sinY;
             float dz = x * sinY + z * cosY;
+
+            // поворачиваем по оси X
             float dy = y * cosX - dz * sinX;
             dz = y * sinX + dz * cosX;
+
 
             float distance = cameraDistance;
             float factor = distance / (distance - dz);
@@ -94,7 +106,7 @@ namespace Viewer
             return new PointF(projectedX, projectedY);
         }
 
-
+        // отрисовка сцены
         private void DrawScene(object sender, PaintEventArgs e)
         {
             Graphics g = e.Graphics;
@@ -105,7 +117,7 @@ namespace Viewer
             DrawCube(g, pen, outerCubeVertices);
             DrawCube(g, innerPen, innerCubeVertices);
 
-
+            // соединяем вершины внешнего и внутреннего куба
             for (int i = 0; i < 8; i++)
             {
                 float x1 = outerCubeVertices[i, 0];
@@ -119,11 +131,11 @@ namespace Viewer
                 PointF p1 = Project(x1, y1, z1);
                 PointF p2 = Project(x2, y2, z2);
 
-
-                g.DrawLine(pen, p1, p2);
+                g.DrawLine(pen, p1, p2); // линии между точками
             }
         }
 
+        // функция для отрисовки куба
         private void DrawCube(Graphics g, Pen pen, float[,] vertices)
         {
             for (int i = 0; i < cubeEdges.GetLength(0); i++)
@@ -142,7 +154,7 @@ namespace Viewer
                 PointF p1 = Project(x1, y1, z1);
                 PointF p2 = Project(x2, y2, z2);
 
-                g.DrawLine(pen, p1, p2);
+                g.DrawLine(pen, p1, p2); // ребро куба
             }
         }
     }
