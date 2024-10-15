@@ -5,14 +5,14 @@ namespace Viewer.ViewModel
 {
     public class ViewerViewModel
     {
-        public Camera Camera { get; private set; }
+        private Camera _camera;
         public Shape3D CurrentShape { get; private set; }
 
         private Shape3D[] shapes;  // все фигуры
 
         public ViewerViewModel()
         {
-            Camera = new Camera(5f);
+            _camera = new Camera(5f);
             InitShapes();
             CurrentShape = shapes[0];  // тессеракт по умолчанию
         }
@@ -37,13 +37,18 @@ namespace Viewer.ViewModel
 
         public void UpdateCameraRotation(float deltaX, float deltaY)
         {
-            Camera.UpdateAngles(deltaX, deltaY);
+            _camera.UpdateAngles(deltaX, deltaY);
+        }
+
+        public void Zoom(float delta)
+        {
+            _camera.Zoom(delta);
         }
 
         public void Draw(Graphics g, Size clientSize)
         {
             Pen pen = new Pen(Color.Black, 2);
-            CurrentShape.Draw(g, pen, Camera, clientSize);
+            CurrentShape.Draw(g, pen, _camera, clientSize);
         }
     }
 }

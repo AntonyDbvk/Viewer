@@ -20,6 +20,7 @@ namespace Viewer
             this.MouseDown += new MouseEventHandler(OnMouseDown);
             this.MouseMove += new MouseEventHandler(OnMouseMove);
             this.MouseUp += new MouseEventHandler(OnMouseUp);
+            this.MouseWheel += new MouseEventHandler(OnMouseWheel);
 
             viewModel = new ViewerViewModel();
             InitUI(); 
@@ -32,7 +33,7 @@ namespace Viewer
             shapeSelector.DropDownStyle = ComboBoxStyle.DropDownList;
             shapeSelector.Items.Add("Тессеракт");
             shapeSelector.Items.Add("Пирамида");
-            shapeSelector.Items.Add("Окдаэдр");
+            shapeSelector.Items.Add("Октаэдр");
             shapeSelector.SelectedIndex = 0; 
             shapeSelector.SelectedIndexChanged += OnShapeSelected;
             this.Controls.Add(shapeSelector);
@@ -56,6 +57,14 @@ namespace Viewer
             startPosition = e.Location;
             isDragging = true;
         }
+
+        private void OnMouseWheel(object sender, MouseEventArgs e)
+        {
+            float delta = e.Delta > 0 ? -0.1f : 0.1f; // Уменьшаем или увеличиваем расстояние
+            viewModel.Zoom(delta); // Вызываем метод для изменения расстояния камеры
+            Invalidate(); // Перерисовываем
+        }
+
 
         // движение мыши — поворот камеры
         private void OnMouseMove(object sender, MouseEventArgs e)
