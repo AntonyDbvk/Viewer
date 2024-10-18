@@ -63,6 +63,7 @@ namespace Viewer
 
         private void OnPaint(object sender, PaintEventArgs e)
         {
+            e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias; // сглаживание при отрисовке
             viewModel.Draw(e.Graphics, this.ClientSize);
         }
 
