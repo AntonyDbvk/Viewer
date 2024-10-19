@@ -24,27 +24,33 @@ namespace Viewer
             this.MouseWheel += new MouseEventHandler(OnMouseWheel);
             this.Resize += new EventHandler(OnResize);
             viewModel = new ViewerViewModel();
-            InitUI(); 
+            InitUI();
         }
 
         private void InitUI()
         {
+            InitShapeSelector();
+            InitProjectionSelector();
+        }
+
+        private void InitShapeSelector()
+        {
             shapeSelector = new ComboBox();
             shapeSelector.Location = new Point(10, 10);
             shapeSelector.DropDownStyle = ComboBoxStyle.DropDownList;
-            shapeSelector.Items.Add("Тессеракт");
-            shapeSelector.Items.Add("Пирамида");
-            shapeSelector.Items.Add("Октаэдр");
-            shapeSelector.SelectedIndex = 0; 
+            shapeSelector.Items.AddRange(new object[] { "Тессеракт", "Пирамида", "Октаэдр","Куб" });
+            shapeSelector.SelectedIndex = 0;
             shapeSelector.SelectedIndexChanged += OnShapeSelected;
             this.Controls.Add(shapeSelector);
+        }
 
+        private void InitProjectionSelector()
+        {
             projectionSelector = new ComboBox();
-            projectionSelector.Location = new Point(10, 40); 
+            projectionSelector.Location = new Point(10, 40);
             projectionSelector.DropDownStyle = ComboBoxStyle.DropDownList;
-            projectionSelector.Items.Add("Ортогональная");
-            projectionSelector.Items.Add("Перспективная");
-            projectionSelector.SelectedIndex = 1; 
+            projectionSelector.Items.AddRange(new object[] { "Ортогональная", "Перспективная" });
+            projectionSelector.SelectedIndex = 1;
             projectionSelector.SelectedIndexChanged += OnProjectionSelected;
             this.Controls.Add(projectionSelector);
         }
@@ -54,7 +60,7 @@ namespace Viewer
             Invalidate(); // Перерисовка в соответствии с размерами окна 
         }
 
-            private void OnShapeSelected(object sender, EventArgs e)
+        private void OnShapeSelected(object sender, EventArgs e)
         {
             int selectedIndex = shapeSelector.SelectedIndex;
             viewModel.ChangeShape(selectedIndex);  // изменяем текущую фигуру в ViewModel
@@ -101,8 +107,8 @@ namespace Viewer
 
         private void OnProjectionSelected(object sender, EventArgs e)
         {
-            viewModel.IsOrthogonal = projectionSelector.SelectedIndex == 0; 
-            Invalidate(); 
+            viewModel.IsOrthogonal = projectionSelector.SelectedIndex == 0;
+            Invalidate();
         }
     }
 }

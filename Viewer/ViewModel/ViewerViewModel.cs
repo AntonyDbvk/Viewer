@@ -27,7 +27,8 @@ namespace Viewer.ViewModel
             {
                 new Tesseract(),
                 new Pyramid(),
-                new Octahedron()
+                new Octahedron(),
+                new Cube()
             };
         }
 

@@ -53,18 +53,19 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Model\Shapes\Cube.cs" />
     <Compile Include="Model\DrawingSettings.cs" />
     <Compile Include="Model\Geometry\Edge.cs" />
     <Compile Include="Model\Geometry\Vertex.cs" />
-    <Compile Include="Model\Octahedron.cs" />
-    <Compile Include="Model\Pyramid.cs" />
-    <Compile Include="Model\Shape3D.cs" />
+    <Compile Include="Model\Shapes\Octahedron.cs" />
+    <Compile Include="Model\Shapes\Pyramid.cs" />
+    <Compile Include="Model\Shapes\Shape3D.cs" />
     <Compile Include="Model\Strategy\CubeDrawStrategy.cs" />
     <Compile Include="Model\Strategy\IDrawStrategy.cs" />
     <Compile Include="Model\Strategy\OctahedronDrawStrategy.cs" />
     <Compile Include="Model\Strategy\PyramidDrawStrategy.cs" />
     <Compile Include="Model\Strategy\TesseractDrawStrategy.cs" />
-    <Compile Include="Model\Tesseract.cs" />
+    <Compile Include="Model\Shapes\Tesseract.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModel\ViewerViewModel.cs" />

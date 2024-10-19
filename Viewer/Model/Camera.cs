@@ -41,7 +41,7 @@ namespace Viewer.Model
         }
 
         
-        public PointF Project(float x, float y, float z, Size clientSize, bool isOrthogonal = false)
+        public PointF Project(float x, float y, float z, Size clientSize, bool isOrthogonal)
         {
             float cosX = (float)Math.Cos(AngleX);
             float sinX = (float)Math.Sin(AngleX);
