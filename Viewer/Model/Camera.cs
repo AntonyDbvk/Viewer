@@ -15,6 +15,9 @@ namespace Viewer.Model
         private const float MIN_ANGLE_X = -1.5f;
         private const float MAX_ANGLE_X = 1.5f;
 
+        private const float SCALE_FACTOR_PERSPECTIVE = 100f;
+        private const float SCALE_FACTOR_ORTHO = 500f;
+
         private const float MIN_DZ = 0.01f;
 
         public Camera(float initialDistance)
@@ -56,7 +59,7 @@ namespace Viewer.Model
 
         private PointF OrthogonalProjection(float dx, float dy, Size clientSize)
         {
-            float factor = 500 / Distance;
+            float factor = SCALE_FACTOR_ORTHO / Distance;
             float projectedX = dx * factor + clientSize.Width / 2;
             float projectedY = dy * factor + clientSize.Height / 2;
 
@@ -74,11 +77,17 @@ namespace Viewer.Model
             }
 
             float factor = Distance / (safeDistance - dz);
-            float projectedX = dx * factor * 100 + clientSize.Width / 2;
-            float projectedY = dy * factor * 100 + clientSize.Height / 2;
+            float projectedX = dx * factor * SCALE_FACTOR_PERSPECTIVE + clientSize.Width / 2;
+            float projectedY = dy * factor * SCALE_FACTOR_PERSPECTIVE + clientSize.Height / 2;
 
             if (float.IsInfinity(projectedX) || float.IsNegativeInfinity(projectedX))
-                throw new ArgumentException();
+            {
+                throw new ArithmeticException("Проекцирование привело к бесконечному значению для координаты X.");
+            }
+            if (float.IsInfinity(projectedY) || float.IsNegativeInfinity(projectedY))
+            {
+                throw new ArithmeticException("Проекцирование привело к бесконечному значению для координаты Y.");
+            }
 
             return new PointF(projectedX, projectedY);
         }
