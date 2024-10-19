@@ -1,45 +1,30 @@
 ﻿using System.Drawing;
 using Viewer.Model;
+using Viewer.Model.Geometry;
+using Viewer.Model.Strategy;
 
 namespace Viewer.Model
 {
     public class Octahedron : Shape3D
     {
-        
-        private float[,] _vertices = new float[,]
+        private Vertex[] _vertices = new Vertex[]
         {
-            { 0, 1, 0 }, { 0, -1, 0 }, 
-            { 1, 0, 0 }, { -1, 0, 0 }, { 0, 0, 1 }, { 0, 0, -1 }  
+        new Vertex(0, 1, 0), new Vertex(0, -1, 0),
+        new Vertex(1, 0, 0), new Vertex(-1, 0, 0),
+        new Vertex(0, 0, 1), new Vertex(0, 0, -1)
         };
 
-   
-        private int[,] _edges = new int[,]
+        private Edge[] _edges = new Edge[]
         {
-            { 0, 2 }, { 0, 3 }, { 0, 4 }, { 0, 5 },
-            { 1, 2 }, { 1, 3 }, { 1, 4 }, { 1, 5 },
-            { 2, 4 }, { 4, 3 }, { 3, 5 }, { 5, 2 }
+        new Edge(0, 2), new Edge(0, 3), new Edge(0, 4), new Edge(0, 5),
+        new Edge(1, 2), new Edge(1, 3), new Edge(1, 4), new Edge(1, 5),
+        new Edge(2, 4), new Edge(4, 3), new Edge(3, 5), new Edge(5, 2)
         };
 
-        public override void Draw(Graphics g, Pen pen, Camera camera, Size clientSize, bool isOrthogonal)
+        public Octahedron()
         {
-            for (int i = 0; i < _edges.GetLength(0); i++)
-            {
-                int index1 = _edges[i, 0];
-                int index2 = _edges[i, 1];
-
-                float x1 = _vertices[index1, 0];
-                float y1 = _vertices[index1, 1];
-                float z1 = _vertices[index1, 2];
-
-                float x2 = _vertices[index2, 0];
-                float y2 = _vertices[index2, 1];
-                float z2 = _vertices[index2, 2];
-
-                PointF p1 = camera.Project(x1, y1, z1, clientSize, isOrthogonal);
-                PointF p2 = camera.Project(x2, y2, z2, clientSize, isOrthogonal);
-
-                g.DrawLine(pen, p1, p2);
-            }
+            DrawStrategy = new OctahedronDrawStrategy(_vertices, _edges);
         }
     }
+
 }

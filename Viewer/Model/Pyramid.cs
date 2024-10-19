@@ -1,42 +1,28 @@
 ﻿using System.Drawing;
 using Viewer.Model;
+using Viewer.Model.Geometry;
+using Viewer.Model.Strategy;
 
 namespace Viewer.Model
 {
     public class Pyramid : Shape3D
     {
-        private float[,] _vertices = new float[,]
+        private Vertex[] _vertices = new Vertex[]
         {
-            { 0, -1, 0 },    
-            { -1, 1, -1 }, { 1, 1, -1 }, { 1, 1, 1 }, { -1, 1, 1 }  
+        new Vertex(0, -1, 0),
+        new Vertex(-1, 1, -1), new Vertex(1, 1, -1), new Vertex(1, 1, 1), new Vertex(-1, 1, 1)
         };
 
-        private int[,] _edges = new int[,]
+        private Edge[] _edges = new Edge[]
         {
-            { 0, 1 }, { 0, 2 }, { 0, 3 }, { 0, 4 },
-            { 1, 2 }, { 2, 3 }, { 3, 4 }, { 4, 1 }
+        new Edge(0, 1), new Edge(0, 2), new Edge(0, 3), new Edge(0, 4),
+        new Edge(1, 2), new Edge(2, 3), new Edge(3, 4), new Edge(4, 1)
         };
 
-        public override void Draw(Graphics g, Pen pen, Camera camera, Size clientSize, bool isOrthogonal)
+        public Pyramid()
         {
-            for (int i = 0; i < _edges.GetLength(0); i++)
-            {
-                int index1 = _edges[i, 0];
-                int index2 = _edges[i, 1];
-
-                float x1 = _vertices[index1, 0];
-                float y1 = _vertices[index1, 1];
-                float z1 = _vertices[index1, 2];
-
-                float x2 = _vertices[index2, 0];
-                float y2 = _vertices[index2, 1];
-                float z2 = _vertices[index2, 2];
-
-                PointF p1 = camera.Project(x1, y1, z1, clientSize, isOrthogonal);
-                PointF p2 = camera.Project(x2, y2, z2, clientSize, isOrthogonal);
-
-                g.DrawLine(pen, p1, p2);
-            }
+            DrawStrategy = new PyramidDrawStrategy(_vertices, _edges);
         }
     }
+
 }

@@ -6,6 +6,9 @@ namespace Viewer.ViewModel
     public class ViewerViewModel
     {
         private Camera _camera;
+
+        private const float DEFAULT_CAMERA_ZOOM = 5f;
+
         public Shape3D CurrentShape { get; private set; }
 
         private Shape3D[] shapes;  // все фигуры
@@ -13,7 +16,7 @@ namespace Viewer.ViewModel
 
         public ViewerViewModel()
         {
-            _camera = new Camera(5f);
+            _camera = new Camera(DEFAULT_CAMERA_ZOOM);
             InitShapes();
             CurrentShape = shapes[0];  // тессеракт по умолчанию
         }
@@ -48,8 +51,12 @@ namespace Viewer.ViewModel
 
         public void Draw(Graphics g, Size clientSize)
         {
-            Pen pen = new Pen(Color.Black, 2);
-            CurrentShape.Draw(g, pen, _camera, clientSize,IsOrthogonal);
+            DrawingSettings settings = new DrawingSettings
+            {
+                EdgePen = new Pen(Color.Black, 2)
+            };
+
+            CurrentShape.Draw(g, settings, _camera, clientSize, IsOrthogonal);
         }
     }
 }

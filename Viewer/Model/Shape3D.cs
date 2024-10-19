@@ -1,9 +1,14 @@
 ﻿using System.Drawing;
+using Viewer.Model.Strategy;
 
 namespace Viewer.Model
 {
     public abstract class Shape3D
     {
-        public abstract void Draw(Graphics g, Pen pen, Camera camera, Size clientSize, bool isOrthogonal);
+        public IDrawStrategy DrawStrategy { get; set; }
+        public void Draw(Graphics g, DrawingSettings settings, Camera camera, Size clientSize, bool isOrthogonal)
+        {
+            DrawStrategy?.Draw(g, settings, camera, clientSize, isOrthogonal);
+        }
     }
 }
