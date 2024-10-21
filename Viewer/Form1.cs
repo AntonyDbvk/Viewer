@@ -15,6 +15,11 @@ namespace Viewer
         private ComboBox projectionSelector;
         private Button zoomInButton;
         private Button zoomOutButton;
+        private Button startStopButton;
+        private TrackBar speedSlider;
+        private Timer autoScrollTimer;
+        private bool isAutoScrolling = false;
+
 
         public Form1()
         {
@@ -30,19 +35,69 @@ namespace Viewer
             InitUI();
         }
 
+        //-----------------ИНИЦИАЛИЗАЦИЯ_UI-----------------
+
         private void InitUI()
         {
             InitShapeSelector();
             InitProjectionSelector();
             InitZoomButtons();
+            InitAutoScrollControls();
+            
         }
+
+        private void InitAutoScrollControls()
+        {
+            InitStartStopButton();
+            InitSpeedSlider();
+            InitAutoScrollTimer();
+            PositionAutoScrollControls();
+        }
+
+        private void InitStartStopButton()
+        {
+            startStopButton = new Button
+            {
+                Text = "Start",
+                Size = new Size(60, 30)
+            };
+            startStopButton.Click += OnStartStopClicked;
+            this.Controls.Add(startStopButton);
+            startStopButton.Anchor = AnchorStyles.Bottom;
+
+        }
+
+        private void InitSpeedSlider()
+        {
+            speedSlider = new TrackBar
+            {
+                Minimum = 0,
+                Maximum = 99,
+                Value = 50,
+                Size = new Size(150, 30)
+            };
+            speedSlider.Scroll += OnSpeedSliderChanged;
+            this.Controls.Add(speedSlider);
+            speedSlider.Anchor = AnchorStyles.Bottom; 
+
+        }
+
+        private void InitAutoScrollTimer()
+        {
+            autoScrollTimer = new Timer
+            {
+                Interval = 50 // начальная скорость
+            };
+            autoScrollTimer.Tick += OnAutoScrollTick;
+        }
+
 
         private void InitShapeSelector()
         {
             shapeSelector = new ComboBox();
             shapeSelector.Location = new Point(10, 10);
             shapeSelector.DropDownStyle = ComboBoxStyle.DropDownList;
-            shapeSelector.Items.AddRange(new object[] { "Тессеракт", "Пирамида", "Октаэдр","Куб" });
+            shapeSelector.Items.AddRange(new object[] { "Тессеракт", "Пирамида", "Октаэдр", "Куб" });
             shapeSelector.SelectedIndex = 0;
             shapeSelector.SelectedIndexChanged += OnShapeSelected;
             this.Controls.Add(shapeSelector);
@@ -62,12 +117,12 @@ namespace Viewer
         private void InitZoomButtons()
         {
             zoomInButton = new Button();
-            zoomInButton.Text = "+"; 
+            zoomInButton.Text = "+";
             zoomInButton.Size = new Size(40, 40);
             zoomInButton.Click += OnZoomInClicked;
 
             zoomOutButton = new Button();
-            zoomOutButton.Text = "-"; 
+            zoomOutButton.Text = "-";
             zoomOutButton.Size = new Size(40, 40);
             zoomOutButton.Click += OnZoomOutClicked;
 
@@ -86,6 +141,43 @@ namespace Viewer
             zoomOutButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
         }
 
+
+        //центрирование кнопки и слайдера
+        private void PositionAutoScrollControls()
+        {
+            int margin = 10;
+            int totalWidth = startStopButton.Width + speedSlider.Width + margin;
+
+
+            int centerX = (this.ClientSize.Width - totalWidth) / 2;
+
+            startStopButton.Location = new Point(centerX, this.ClientSize.Height - startStopButton.Height - margin);
+            speedSlider.Location = new Point(startStopButton.Right + margin, startStopButton.Top);
+        }
+
+        //-----------------ОБРАБОТЧИКИ_СОБЫТИЙ-----------------
+
+        private void OnStartStopClicked(object sender, EventArgs e)
+        {
+            isAutoScrolling = !isAutoScrolling;
+            startStopButton.Text = isAutoScrolling ? "Stop" : "Start";
+
+            if (isAutoScrolling)
+                autoScrollTimer.Start();
+            else
+                autoScrollTimer.Stop();
+        }
+
+        private void OnSpeedSliderChanged(object sender, EventArgs e)
+        {
+            autoScrollTimer.Interval = 100 - speedSlider.Value;  // изменение интервала таймера в зависимости от скорости
+        }
+
+        private void OnAutoScrollTick(object sender, EventArgs e)
+        {
+            viewModel.UpdateCameraRotation(1, 0);  // поворот по оси X
+            Invalidate(); 
+        }
 
 
         private void OnResize(object sender, EventArgs e)
