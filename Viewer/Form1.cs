@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 using Viewer.ViewModel;
 
@@ -12,6 +13,8 @@ namespace Viewer
         private Point startPosition;
         private ComboBox shapeSelector;
         private ComboBox projectionSelector;
+        private Button zoomInButton;
+        private Button zoomOutButton;
 
         public Form1()
         {
@@ -31,6 +34,7 @@ namespace Viewer
         {
             InitShapeSelector();
             InitProjectionSelector();
+            InitZoomButtons();
         }
 
         private void InitShapeSelector()
@@ -55,9 +59,50 @@ namespace Viewer
             this.Controls.Add(projectionSelector);
         }
 
+        private void InitZoomButtons()
+        {
+            zoomInButton = new Button();
+            zoomInButton.Text = "+"; 
+            zoomInButton.Size = new Size(40, 40);
+            zoomInButton.Click += OnZoomInClicked;
+
+            zoomOutButton = new Button();
+            zoomOutButton.Text = "-"; 
+            zoomOutButton.Size = new Size(40, 40);
+            zoomOutButton.Click += OnZoomOutClicked;
+
+            this.Controls.Add(zoomInButton);
+            this.Controls.Add(zoomOutButton);
+
+            int margin = 10;
+
+            zoomInButton.Location = new Point(this.ClientSize.Width - zoomInButton.Width - margin,
+                                              this.ClientSize.Height - zoomInButton.Height - margin);
+            zoomOutButton.Location = new Point(zoomInButton.Left - zoomOutButton.Width - margin,
+                                               this.ClientSize.Height - zoomOutButton.Height - margin);
+
+            // привязка кнопок к нижнему правому краю
+            zoomInButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            zoomOutButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+        }
+
+
+
         private void OnResize(object sender, EventArgs e)
         {
             Invalidate(); // Перерисовка в соответствии с размерами окна 
+        }
+
+        private void OnZoomInClicked(object sender, EventArgs e)
+        {
+            viewModel.Zoom(-0.5f);
+            Invalidate();
+        }
+
+        private void OnZoomOutClicked(object sender, EventArgs e)
+        {
+            viewModel.Zoom(0.5f);
+            Invalidate();
         }
 
         private void OnShapeSelected(object sender, EventArgs e)
