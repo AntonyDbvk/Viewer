@@ -1,29 +1,32 @@
 ﻿using System.Drawing;
 using Viewer.Model;
+using Viewer.Model.Shapes;
 
 namespace Viewer.ViewModel
 {
     public class ViewerViewModel
     {
-        private Camera _camera;
+        private readonly Camera _camera;
+        private readonly Renderer _renderer;
 
         private const float DEFAULT_CAMERA_ZOOM = 5f;
 
         public Shape3D CurrentShape { get; private set; }
 
-        private Shape3D[] shapes;  // все фигуры
+        private Shape3D[] _shapes;  // все фигуры
         public bool IsOrthogonal { get; set; }
 
         public ViewerViewModel()
         {
             _camera = new Camera(DEFAULT_CAMERA_ZOOM);
-            InitShapes();
-            CurrentShape = shapes[0];  // тессеракт по умолчанию
+            _renderer = new Renderer();
+            Init_shapes();
+            CurrentShape = _shapes[0];  // тессеракт по умолчанию
         }
 
-        private void InitShapes()
+        private void Init_shapes()
         {
-            shapes = new Shape3D[]
+            _shapes = new Shape3D[]
             {
                 new Tesseract(),
                 new Pyramid(),
@@ -34,9 +37,9 @@ namespace Viewer.ViewModel
 
         public void ChangeShape(int index)
         {
-            if (index >= 0 && index < shapes.Length)
+            if (index >= 0 && index < _shapes.Length)
             {
-                CurrentShape = shapes[index];
+                CurrentShape = _shapes[index];
             }
         }
 
@@ -52,12 +55,7 @@ namespace Viewer.ViewModel
 
         public void Draw(Graphics g, Size clientSize)
         {
-            DrawingSettings settings = new DrawingSettings
-            {
-                EdgePen = new Pen(Color.Black, 2)
-            };
-
-            CurrentShape.Draw(g, settings, _camera, clientSize, IsOrthogonal);
+            _renderer.DrawShape(g, CurrentShape, _camera, clientSize, IsOrthogonal);
         }
     }
 }

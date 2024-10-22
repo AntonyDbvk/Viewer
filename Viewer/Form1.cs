@@ -43,7 +43,7 @@ namespace Viewer
             InitProjectionSelector();
             InitZoomButtons();
             InitAutoScrollControls();
-            
+
         }
 
         private void InitAutoScrollControls()
@@ -78,7 +78,7 @@ namespace Viewer
             };
             speedSlider.Scroll += OnSpeedSliderChanged;
             this.Controls.Add(speedSlider);
-            speedSlider.Anchor = AnchorStyles.Bottom; 
+            speedSlider.Anchor = AnchorStyles.Bottom;
 
         }
 
@@ -176,7 +176,7 @@ namespace Viewer
         private void OnAutoScrollTick(object sender, EventArgs e)
         {
             viewModel.UpdateCameraRotation(1, 0);  // поворот по оси X
-            Invalidate(); 
+            Invalidate();
         }
 
 

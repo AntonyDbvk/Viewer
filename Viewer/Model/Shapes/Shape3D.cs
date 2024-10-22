@@ -1,14 +1,13 @@
 ﻿using System.Drawing;
+using Viewer.Model.Geometry;
 using Viewer.Model.Strategy;
 
-namespace Viewer.Model
+namespace Viewer.Model.Shapes
 {
     public abstract class Shape3D
     {
-        public IDrawStrategy DrawStrategy { get; set; }
-        public void Draw(Graphics g, DrawingSettings settings, Camera camera, Size clientSize, bool isOrthogonal)
-        {
-            DrawStrategy?.Draw(g, settings, camera, clientSize, isOrthogonal);
-        }
+        public Vertex[] Vertices { get; protected set; }
+
+        public Edge[] Edges { get; protected set; }
     }
 }
