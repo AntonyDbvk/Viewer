@@ -12,7 +12,7 @@ namespace Viewer.Model
     public class Renderer
     {
         private readonly DrawingSettings _drawingSettings;
-
+        private IDrawStrategy _drawStrategy;
         public Renderer()
         {
             _drawingSettings = new DrawingSettings
@@ -23,26 +23,9 @@ namespace Viewer.Model
 
         public void DrawShape(Graphics g, Shape3D shape, Camera camera, Size clientSize, bool isOrthogonal)
         {
-            if (shape is Tesseract)
-            {
-                var strategy = new TesseractDrawStrategy();
-                strategy.Draw(g, shape, _drawingSettings, camera, clientSize, isOrthogonal);
-            }
-            else if (shape is Cube)
-            {
-                var strategy = new ShapeDrawStrategy();
-                strategy.Draw(g, shape, _drawingSettings, camera, clientSize, isOrthogonal);
-            }
-            else if (shape is Pyramid)
-            {
-                var strategy = new ShapeDrawStrategy();
-                strategy.Draw(g, shape, _drawingSettings, camera, clientSize, isOrthogonal);
-            }
-            else if (shape is Octahedron)
-            {
-                var strategy = new ShapeDrawStrategy();
-                strategy.Draw(g, shape, _drawingSettings, camera, clientSize, isOrthogonal);
-            }
+            _drawStrategy = shape is Tesseract ? new TesseractDrawStrategy() : new ShapeDrawStrategy();
+
+            _drawStrategy.Draw(g, shape, _drawingSettings, camera, clientSize, isOrthogonal);
         }
     }   
 }

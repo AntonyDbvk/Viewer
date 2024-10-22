@@ -11,7 +11,7 @@ namespace Viewer.Model.Strategy
 {
     public class TesseractDrawStrategy : ShapeDrawStrategy
     {
-        public void Draw(Graphics g, Shape3D model, DrawingSettings settings, Camera camera, Size clientSize, bool isOrthogonal)
+        public override void Draw(Graphics g, Shape3D model, DrawingSettings settings, Camera camera, Size clientSize, bool isOrthogonal)
         {
             var tesseract = model as Tesseract;
 
@@ -21,19 +21,19 @@ namespace Viewer.Model.Strategy
             var innerVertices = tesseract.InnerVertices;
             var innerEdges = tesseract.InnerEdges;
 
-            DrawEdges(g, outerVertices, outerEdges, settings, camera, clientSize, isOrthogonal);
-            DrawEdges(g, innerVertices, innerEdges, settings, camera, clientSize, isOrthogonal);
+            DrawEdges(g, outerVertices, outerEdges, settings.EdgePen, camera, clientSize, isOrthogonal);
+            DrawEdges(g, innerVertices, innerEdges, settings.InnerPen, camera, clientSize, isOrthogonal);
             ConnectCubes(g, settings, camera, outerVertices, innerVertices, clientSize, isOrthogonal);
         }
 
         private void ConnectCubes(Graphics g, DrawingSettings settings, Camera camera, Vertex[] outerVertices, Vertex[] innerVertices, Size clientSize, bool isOrthogonal)
         {
-            settings.EdgePen = new Pen(Color.Blue, 2);
+            Pen pen = new Pen(Color.Blue, 2);
             for (int i = 0; i < outerVertices.Length; i++)
             {
                 PointF outerPoint = camera.Project(outerVertices[i].X, outerVertices[i].Y, outerVertices[i].Z, clientSize, isOrthogonal);
                 PointF innerPoint = camera.Project(innerVertices[i].X, innerVertices[i].Y, innerVertices[i].Z, clientSize, isOrthogonal);
-                g.DrawLine(settings.EdgePen, outerPoint, innerPoint);
+                g.DrawLine(pen, outerPoint, innerPoint);
             }
         }
     }

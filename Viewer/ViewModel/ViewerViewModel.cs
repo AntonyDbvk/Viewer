@@ -9,7 +9,7 @@ namespace Viewer.ViewModel
         private readonly Camera _camera;
         private readonly Renderer _renderer;
 
-        private const float DEFAULT_CAMERA_ZOOM = 5f;
+        private const float DefaultCameraZoom = 5f;
 
         public Shape3D CurrentShape { get; private set; }
 
@@ -18,7 +18,7 @@ namespace Viewer.ViewModel
 
         public ViewerViewModel()
         {
-            _camera = new Camera(DEFAULT_CAMERA_ZOOM);
+            _camera = new Camera(DefaultCameraZoom);
             _renderer = new Renderer();
             Init_shapes();
             CurrentShape = _shapes[0];  // тессеракт по умолчанию

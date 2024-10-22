@@ -9,14 +9,14 @@ namespace Viewer.Model.Shapes
     {
         public Octahedron()
         {
-            Vertices = new Vertex[] 
+            Vertices = new[] 
             {
                 new Vertex(0, 1, 0), new Vertex(0, -1, 0),
                 new Vertex(1, 0, 0), new Vertex(-1, 0, 0),
                 new Vertex(0, 0, 1), new Vertex(0, 0, -1)
             };
 
-            Edges = new Edge[] 
+            Edges = new[] 
             {
                 new Edge(0, 2), new Edge(0, 3), new Edge(0, 4), new Edge(0, 5),
                 new Edge(1, 2), new Edge(1, 3), new Edge(1, 4), new Edge(1, 5),
