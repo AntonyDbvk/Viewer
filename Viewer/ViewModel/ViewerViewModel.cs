@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
-using Viewer.Model;
 using Viewer.Model.Shapes;
+using Viewer.Render;
 
 namespace Viewer.ViewModel
 {

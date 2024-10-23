@@ -1,7 +1,4 @@
-﻿using System.Drawing;
-using Viewer.Model;
-using Viewer.Model.Geometry;
-using Viewer.Model.Strategy;
+﻿using Viewer.Model.Geometry;
 
 namespace Viewer.Model.Shapes
 {

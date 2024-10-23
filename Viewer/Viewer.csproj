@@ -46,14 +46,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model\Camera.cs" />
+    <Compile Include="Render\Camera.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Model\Renderer.cs" />
+    <Compile Include="Render\Renderer.cs" />
     <Compile Include="Model\Shapes\Cube.cs" />
     <Compile Include="Model\DrawingSettings.cs" />
     <Compile Include="Model\Geometry\Edge.cs" />
@@ -61,9 +61,9 @@
     <Compile Include="Model\Shapes\Octahedron.cs" />
     <Compile Include="Model\Shapes\Pyramid.cs" />
     <Compile Include="Model\Shapes\Shape3D.cs" />
-    <Compile Include="Model\Strategy\IDrawStrategy.cs" />
-    <Compile Include="Model\Strategy\ShapeDrawStrategy.cs" />
-    <Compile Include="Model\Strategy\TesseractDrawStrategy.cs" />
+    <Compile Include="Render\Strategy\IDrawStrategy.cs" />
+    <Compile Include="Render\Strategy\ShapeDrawStrategy.cs" />
+    <Compile Include="Render\Strategy\TesseractDrawStrategy.cs" />
     <Compile Include="Model\Shapes\Tesseract.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -90,5 +90,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 
-namespace Viewer.Model
+namespace Viewer.Render
 {
     public class Camera
     {
