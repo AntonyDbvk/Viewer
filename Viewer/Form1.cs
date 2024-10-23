@@ -15,10 +15,10 @@ namespace Viewer
         private Button _zoomInButton;
         private Button _zoomOutButton;
         private Button _startStopButton;
-        private TrackBar _speedSlider;
+        private TextBox _speedTextBox;  
         private Timer _autoScrollTimer;
-        private bool _isAutoScrolling = false;
-
+        private const int MinSpeed = 1; 
+        private const int MaxSpeed = 100;  
 
         public Form1()
         {
@@ -42,13 +42,12 @@ namespace Viewer
             InitProjectionSelector();
             InitZoomButtons();
             InitAutoScrollControls();
-
         }
 
         private void InitAutoScrollControls()
         {
             InitStartStopButton();
-            InitSpeedSlider();
+            InitSpeedTextBox();
             InitAutoScrollTimer();
             PositionAutoScrollControls();
         }
@@ -63,33 +62,29 @@ namespace Viewer
             _startStopButton.Click += OnStartStopClicked;
             this.Controls.Add(_startStopButton);
             _startStopButton.Anchor = AnchorStyles.Bottom;
-
         }
 
-        private void InitSpeedSlider()
+        private void InitSpeedTextBox()
         {
-            _speedSlider = new TrackBar
+            _speedTextBox = new TextBox
             {
-                Minimum = 0,
-                Maximum = 99,
-                Value = 50,
-                Size = new Size(150, 30)
+                Size = new Size(60, 30),
+                Text = _viewModel.CurrentSpeed.ToString()
             };
-            _speedSlider.Scroll += OnSpeedSliderChanged;
-            this.Controls.Add(_speedSlider);
-            _speedSlider.Anchor = AnchorStyles.Bottom;
-
+            _speedTextBox.KeyDown += OnSpeedTextBoxKeyDown;
+            _speedTextBox.TextChanged += OnSpeedTextChanged;
+            this.Controls.Add(_speedTextBox);
+            _speedTextBox.Anchor = AnchorStyles.Bottom;
         }
 
         private void InitAutoScrollTimer()
         {
             _autoScrollTimer = new Timer
             {
-                Interval = 50 // начальная скорость
+                Interval = 1 // частота тика 
             };
             _autoScrollTimer.Tick += OnAutoScrollTick;
         }
-
 
         private void InitShapeSelector()
         {
@@ -139,45 +134,67 @@ namespace Viewer
             _zoomInButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             _zoomOutButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
         }
-
-
-        //центрирование кнопки и слайдера
+        //центрирование кнопки и TextBox
         private void PositionAutoScrollControls()
         {
             int margin = 10;
-            int totalWidth = _startStopButton.Width + _speedSlider.Width + margin;
+            int buttonWidth = _startStopButton.Width;
+            int textBoxWidth = _speedTextBox.Width;
 
-
-            int centerX = (this.ClientSize.Width - totalWidth) / 2;
-
+            int centerX = (this.ClientSize.Width - buttonWidth) / 2;
             _startStopButton.Location = new Point(centerX, this.ClientSize.Height - _startStopButton.Height - margin);
-            _speedSlider.Location = new Point(_startStopButton.Right + margin, _startStopButton.Top);
+
+            _speedTextBox.Location = new Point(_startStopButton.Left - textBoxWidth - margin,
+                _startStopButton.Top);
         }
 
         //-----------------ОБРАБОТЧИКИ_СОБЫТИЙ-----------------
 
+        private void OnSpeedTextBoxKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                this.ActiveControl = null;
+                e.Handled = true;
+            }
+        }
+
+        private void OnSpeedTextChanged(object sender, EventArgs e)
+        {
+            if (int.TryParse(_speedTextBox.Text, out var newSpeed))
+            {
+                if (newSpeed >= MinSpeed && newSpeed <= MaxSpeed)
+                {
+                    _speedTextBox.BackColor = Color.White;
+                    _viewModel.UpdateSpeed(newSpeed); 
+                }
+                else
+                {
+                    _speedTextBox.BackColor = Color.LightCoral; // если значение вне диапазона
+                }
+            }
+            else
+            {
+                _speedTextBox.BackColor = Color.LightCoral; // некорректное значение
+            }
+        }
+
         private void OnStartStopClicked(object sender, EventArgs e)
         {
-            _isAutoScrolling = !_isAutoScrolling;
-            _startStopButton.Text = _isAutoScrolling ? "Stop" : "Start";
+            _viewModel.ToggleAutoScroll();
+            _startStopButton.Text = _viewModel.IsAutoScrolling ? "Stop" : "Start";
 
-            if (_isAutoScrolling)
+            if (_viewModel.IsAutoScrolling)
                 _autoScrollTimer.Start();
             else
                 _autoScrollTimer.Stop();
         }
 
-        private void OnSpeedSliderChanged(object sender, EventArgs e)
-        {
-            _autoScrollTimer.Interval = 100 - _speedSlider.Value;  // изменение интервала таймера в зависимости от скорости
-        }
-
         private void OnAutoScrollTick(object sender, EventArgs e)
         {
-            _viewModel.UpdateCameraRotation(1, 0);  // поворот по оси X
+            _viewModel.RotateAutomatically();
             Invalidate();
         }
-
 
         private void OnResize(object sender, EventArgs e)
         {
@@ -186,13 +203,13 @@ namespace Viewer
 
         private void OnZoomInClicked(object sender, EventArgs e)
         {
-            _viewModel.Zoom(-0.5f);
+            _viewModel.ZoomIn();
             Invalidate();
         }
 
         private void OnZoomOutClicked(object sender, EventArgs e)
         {
-            _viewModel.Zoom(0.5f);
+            _viewModel.ZoomOut();
             Invalidate();
         }
 
@@ -232,7 +249,7 @@ namespace Viewer
                 Point currentPosition = e.Location;
                 _viewModel.UpdateCameraRotation(currentPosition.X - _startPosition.X, currentPosition.Y - _startPosition.Y);
                 _startPosition = currentPosition;
-                Invalidate(); // перерисовываем
+                Invalidate();
             }
         }
 
