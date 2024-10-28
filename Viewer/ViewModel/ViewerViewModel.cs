@@ -12,14 +12,14 @@ namespace Viewer.ViewModel
         private readonly Renderer _renderer;
         private Shape3D[] _shapes;  // все фигуры
         private const float DefaultCameraZoom = 5f;
-        private const int DefaultSpeed = 50;  // начальная скорость
-        private const int MaxSpeed = 100;
-        private const float RotationFactor = 50f; // коэффициент для расчета скорости вращения
+        private const int DefaultSpeed = 45;  // начальная скорость
+        private const int MaxSpeed = 360;
+        private const float RotationFactor = 360; // коэффициент для расчета скорости вращения
         public Shape3D CurrentShape { get; private set; }
         public bool IsOrthogonal { get; set; }
         public bool IsAutoScrolling { get; private set; }
         public int CurrentSpeed { get; private set; } = DefaultSpeed;
-        private float _rotationSpeed;
+        public float _rotationSpeed;
         private DrawStrategyType _currentDrawStrategy = DrawStrategyType.WithoutFaces;
 
         public ViewerViewModel()
@@ -98,7 +98,8 @@ namespace Viewer.ViewModel
 
         private void UpdateRotationSpeed()
         {
-            _rotationSpeed = (float)Math.Pow(CurrentSpeed / (float)MaxSpeed, 2) * RotationFactor; // вычисление скорости вращения
+            float radians = CurrentSpeed * (float)(Math.PI / 180);
+            _rotationSpeed = radians * 100; 
         }
     }
 }

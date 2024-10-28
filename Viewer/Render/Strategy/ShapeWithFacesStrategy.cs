@@ -95,11 +95,7 @@ namespace Viewer.Render.Strategy
                 }
                 path.RemoveAt(path.Count - 1);
             }
-
             return null;
         }
     }
-
-
-
 }

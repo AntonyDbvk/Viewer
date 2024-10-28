@@ -20,8 +20,8 @@ namespace Viewer
         private TrackBar _speedSlider;
         private ComboBox _drawStrategySelector;
         private const int MinSpeed = 1; 
-        private const int MaxSliderSpeed = 100;
-        private const int MaxTextBoxSpeed = 150;
+        private const int MaxSliderSpeed = 45;
+        private const int MaxTextBoxSpeed = 360;
         
 
         public Form1()
@@ -251,6 +251,7 @@ namespace Viewer
 
         private void OnZoomInClicked(object sender, EventArgs e)
         {
+            MessageBox.Show(_viewModel._rotationSpeed.ToString());
             _viewModel.ZoomIn();
             Invalidate();
         }
