@@ -8,5 +8,4 @@ namespace Viewer.Render.Strategy
     {
         void Draw(Graphics g, Shape3D model, DrawingSettings settings, Camera camera, Size clientSize, bool isOrthogonal);
     }
-
 }

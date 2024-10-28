@@ -7,5 +7,4 @@ namespace Viewer.Model
         public Pen EdgePen { get; set; } = new Pen(Color.Black, 2);
         public Pen InnerPen { get; set; } = new Pen(Color.Red, 2);
     }
-
 }

@@ -17,11 +17,25 @@ namespace Viewer.Render
             };
         }
 
-        public void DrawShape(Graphics g, Shape3D shape, Camera camera, Size clientSize, bool isOrthogonal)
+        public void DrawShape(Graphics g, Shape3D shape, Camera camera, Size clientSize, bool isOrthogonal, DrawStrategyType drawStrategyType)
         {
-            _drawStrategy = shape is Tesseract ? new TesseractDrawStrategy() : new ShapeDrawStrategy();
-
+            _drawStrategy = GetDrawStrategy(shape, drawStrategyType);
             _drawStrategy.Draw(g, shape, _drawingSettings, camera, clientSize, isOrthogonal);
         }
-    }   
+
+        private IDrawStrategy GetDrawStrategy(Shape3D shape, DrawStrategyType drawStrategyType)
+        {
+            if (shape is Tesseract)
+            {
+                return drawStrategyType == DrawStrategyType.WithFaces
+                    ? new TesseractWithFacesDrawStrategy()
+                    : new TesseractDrawStrategy();
+            }
+
+            return drawStrategyType == DrawStrategyType.WithFaces
+                ? (IDrawStrategy)new ShapeWithFacesStrategy()
+                : new ShapeDrawStrategy();
+        }
+
+    }
 }

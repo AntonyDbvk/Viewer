@@ -17,9 +17,7 @@ namespace Viewer.Render
 
         private const float ScaleFactorPerspective = 100f;
         private const float ScaleFactorOrtho = 500f;
-
-        private const float MinDz = 0.01f;
-
+        
         public Camera(float initialDistance)
         {
             Distance = initialDistance;

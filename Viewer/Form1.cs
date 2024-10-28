@@ -17,8 +17,12 @@ namespace Viewer
         private Button _startStopButton;
         private TextBox _speedTextBox;  
         private Timer _autoScrollTimer;
+        private TrackBar _speedSlider;
+        private ComboBox _drawStrategySelector;
         private const int MinSpeed = 1; 
-        private const int MaxSpeed = 100;  
+        private const int MaxSliderSpeed = 100;
+        private const int MaxTextBoxSpeed = 150;
+        
 
         public Form1()
         {
@@ -42,14 +46,47 @@ namespace Viewer
             InitProjectionSelector();
             InitZoomButtons();
             InitAutoScrollControls();
+            InitDrawStrategySelector();
         }
 
         private void InitAutoScrollControls()
         {
             InitStartStopButton();
             InitSpeedTextBox();
+            InitSpeedSlider();
             InitAutoScrollTimer();
             PositionAutoScrollControls();
+        }
+            
+        private void InitDrawStrategySelector()
+        {
+            _drawStrategySelector = new ComboBox
+            {
+                Location = new Point(10, 70),
+                DropDownStyle = ComboBoxStyle.DropDownList
+            };
+            _drawStrategySelector.Items.AddRange(new object[] { "Без граней", "С гранями" });
+            _drawStrategySelector.SelectedIndex = 0;
+            _drawStrategySelector.SelectedIndexChanged += OnDrawStrategySelected;
+            this.Controls.Add(_drawStrategySelector);
+        }
+
+
+        private void InitSpeedSlider()
+        {
+            _speedSlider = new TrackBar
+            {
+                Minimum = MinSpeed,
+                Maximum = MaxSliderSpeed,
+                TickFrequency = 10,
+                SmallChange = 1,
+                LargeChange = 10,
+                Value = _viewModel.CurrentSpeed,
+                Size = new Size(200, 45),
+            };
+            _speedSlider.Scroll += OnSpeedSliderScroll;
+            this.Controls.Add(_speedSlider);
+            _speedSlider.Anchor = AnchorStyles.Bottom;
         }
 
         private void InitStartStopButton()
@@ -140,12 +177,14 @@ namespace Viewer
             int margin = 10;
             int buttonWidth = _startStopButton.Width;
             int textBoxWidth = _speedTextBox.Width;
+            int sliderWidth = _speedSlider.Width;
 
             int centerX = (this.ClientSize.Width - buttonWidth) / 2;
             _startStopButton.Location = new Point(centerX, this.ClientSize.Height - _startStopButton.Height - margin);
 
-            _speedTextBox.Location = new Point(_startStopButton.Left - textBoxWidth - margin,
-                _startStopButton.Top);
+            _speedTextBox.Location = new Point(_startStopButton.Left - textBoxWidth - margin, _startStopButton.Top);
+
+            _speedSlider.Location = new Point(centerX - (sliderWidth / 2), _startStopButton.Top - _speedSlider.Height - margin);
         }
 
         //-----------------ОБРАБОТЧИКИ_СОБЫТИЙ-----------------
@@ -159,25 +198,34 @@ namespace Viewer
             }
         }
 
+        private void OnSpeedSliderScroll(object sender, EventArgs e)
+        {
+            _speedTextBox.Text = _speedSlider.Value.ToString();
+            _viewModel.UpdateSpeed(_speedSlider.Value);
+        }
+
+        
         private void OnSpeedTextChanged(object sender, EventArgs e)
         {
-            if (int.TryParse(_speedTextBox.Text, out var newSpeed))
+            if (!int.TryParse(_speedTextBox.Text, out var newSpeed))
             {
-                if (newSpeed >= MinSpeed && newSpeed <= MaxSpeed)
-                {
-                    _speedTextBox.BackColor = Color.White;
-                    _viewModel.UpdateSpeed(newSpeed); 
-                }
-                else
-                {
-                    _speedTextBox.BackColor = Color.LightCoral; // если значение вне диапазона
-                }
+                _speedTextBox.BackColor = Color.LightCoral;
+                return;
             }
-            else
+            
+            if (newSpeed < MinSpeed || newSpeed > MaxTextBoxSpeed)
             {
-                _speedTextBox.BackColor = Color.LightCoral; // некорректное значение
+                _speedTextBox.BackColor = Color.LightCoral;
+                return;
             }
+
+            _speedTextBox.BackColor = Color.White;
+            _viewModel.UpdateSpeed(newSpeed);
+
+            // если значение превышает максимум слайдера, оставляем слайдер на максимуме
+            _speedSlider.Value = newSpeed > MaxSliderSpeed ? MaxSliderSpeed : newSpeed;
         }
+
 
         private void OnStartStopClicked(object sender, EventArgs e)
         {
@@ -244,13 +292,11 @@ namespace Viewer
         // движение мыши — поворот камеры
         private void OnMouseMove(object sender, MouseEventArgs e)
         {
-            if (_isDragging)
-            {
-                Point currentPosition = e.Location;
-                _viewModel.UpdateCameraRotation(currentPosition.X - _startPosition.X, currentPosition.Y - _startPosition.Y);
-                _startPosition = currentPosition;
-                Invalidate();
-            }
+            if (!_isDragging) return;
+            Point currentPosition = e.Location;
+            _viewModel.UpdateCameraRotation(currentPosition.X - _startPosition.X, currentPosition.Y - _startPosition.Y);
+            _startPosition = currentPosition;
+            Invalidate();
         }
 
         private void OnMouseUp(object sender, MouseEventArgs e)
@@ -263,5 +309,12 @@ namespace Viewer
             _viewModel.IsOrthogonal = _projectionSelector.SelectedIndex == 0;
             Invalidate();
         }
+
+        private void OnDrawStrategySelected(object sender, EventArgs e)
+        {
+            _viewModel.ChangeDrawStrategy(_drawStrategySelector.SelectedIndex);
+            Invalidate();
+        }
+
     }
 }

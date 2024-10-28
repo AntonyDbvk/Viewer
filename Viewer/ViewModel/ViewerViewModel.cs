@@ -2,6 +2,7 @@
 using System.Drawing;
 using Viewer.Model.Shapes;
 using Viewer.Render;
+using Viewer.Model;
 
 namespace Viewer.ViewModel
 {
@@ -19,6 +20,7 @@ namespace Viewer.ViewModel
         public bool IsAutoScrolling { get; private set; }
         public int CurrentSpeed { get; private set; } = DefaultSpeed;
         private float _rotationSpeed;
+        private DrawStrategyType _currentDrawStrategy = DrawStrategyType.WithoutFaces;
 
         public ViewerViewModel()
         {
@@ -38,6 +40,11 @@ namespace Viewer.ViewModel
             new Octahedron(),
             new Cube()
             };
+        }
+
+        public void ChangeDrawStrategy(int index)
+        {
+            _currentDrawStrategy = (DrawStrategyType)index;
         }
 
         public void ChangeShape(int index)
@@ -70,7 +77,7 @@ namespace Viewer.ViewModel
 
         public void Draw(Graphics g, Size clientSize)
         {
-            _renderer.DrawShape(g, CurrentShape, _camera, clientSize, IsOrthogonal);
+            _renderer.DrawShape(g, CurrentShape, _camera, clientSize, IsOrthogonal, _currentDrawStrategy);
         }
 
         public void ToggleAutoScroll()
