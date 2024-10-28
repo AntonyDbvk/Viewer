@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Linq;
 using Viewer.Model;
 using Viewer.Model.Geometry;
 using Viewer.Model.Shapes;
 
-namespace Viewer.Render.Strategy
+namespace Viewer.Render.DrawStrategy
 {
     public class ShapeWithFacesStrategy : IDrawStrategy
     {

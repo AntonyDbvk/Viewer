@@ -6,7 +6,7 @@ using Viewer.Model;
 using Viewer.Model.Geometry;
 using Viewer.Model.Shapes;
 
-namespace Viewer.Render.Strategy
+namespace Viewer.Render.DrawStrategy
 {
     public class TesseractWithFacesDrawStrategy : TesseractDrawStrategy
     {

@@ -62,14 +62,17 @@
     <Compile Include="Model\Shapes\Octahedron.cs" />
     <Compile Include="Model\Shapes\Pyramid.cs" />
     <Compile Include="Model\Shapes\Shape3D.cs" />
-    <Compile Include="Render\Strategy\IDrawStrategy.cs" />
-    <Compile Include="Render\Strategy\ShapeDrawStrategy.cs" />
-    <Compile Include="Render\Strategy\ShapeWithFacesStrategy.cs" />
-    <Compile Include="Render\Strategy\TesseractDrawStrategy.cs" />
+    <Compile Include="Render\DrawStrategy\IDrawStrategy.cs" />
+    <Compile Include="Render\DrawStrategy\ShapeDrawStrategy.cs" />
+    <Compile Include="Render\DrawStrategy\ShapeWithFacesStrategy.cs" />
+    <Compile Include="Render\DrawStrategy\TesseractDrawStrategy.cs" />
     <Compile Include="Model\Shapes\Tesseract.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Render\Strategy\TesseractWithFacesDrawStrategy.cs" />
+    <Compile Include="Render\DrawStrategy\TesseractWithFacesDrawStrategy.cs" />
+    <Compile Include="Render\RotationSpeedStrategy\IRotationSpeedStrategy.cs" />
+    <Compile Include="Render\RotationSpeedStrategy\RotationSpeedStrategyByDegrees.cs" />
+    <Compile Include="Render\RotationSpeedStrategy\SimpleRotationSpeedStrategy.cs" />
     <Compile Include="ViewModel\ViewerViewModel.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

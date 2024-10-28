@@ -15,14 +15,11 @@ namespace Viewer
         private Button _zoomInButton;
         private Button _zoomOutButton;
         private Button _startStopButton;
-        private TextBox _speedTextBox;  
+        private TextBox _speedTextBox;
         private Timer _autoScrollTimer;
         private TrackBar _speedSlider;
         private ComboBox _drawStrategySelector;
-        private const int MinSpeed = 1; 
-        private const int MaxSliderSpeed = 45;
-        private const int MaxTextBoxSpeed = 360;
-        
+        private MenuStrip _menuStrip;
 
         public Form1()
         {
@@ -42,6 +39,7 @@ namespace Viewer
 
         private void InitUi()
         {
+            InitMenu();
             InitShapeSelector();
             InitProjectionSelector();
             InitZoomButtons();
@@ -57,37 +55,49 @@ namespace Viewer
             InitAutoScrollTimer();
             PositionAutoScrollControls();
         }
-            
-        private void InitDrawStrategySelector()
-        {
-            _drawStrategySelector = new ComboBox
-            {
-                Location = new Point(10, 70),
-                DropDownStyle = ComboBoxStyle.DropDownList
-            };
-            _drawStrategySelector.Items.AddRange(new object[] { "Без граней", "С гранями" });
-            _drawStrategySelector.SelectedIndex = 0;
-            _drawStrategySelector.SelectedIndexChanged += OnDrawStrategySelected;
-            this.Controls.Add(_drawStrategySelector);
-        }
 
+        private void InitMenu()
+        {
+            _menuStrip = new MenuStrip();
+            var fileMenuItem = new ToolStripMenuItem("Меню");
+
+            var toggleSpeedMenuItem = new ToolStripMenuItem("Скорость в градусах", null, (s, e) =>
+            {
+                _viewModel.ToggleRotationSpeedStrategy();
+                InitSpeedSlider();
+            });
+
+            fileMenuItem.DropDownItems.Add(toggleSpeedMenuItem);
+            _menuStrip.Items.Add(fileMenuItem);
+            this.Controls.Add(_menuStrip);
+        }
 
         private void InitSpeedSlider()
         {
-            _speedSlider = new TrackBar
+            if (_speedSlider == null)
             {
-                Minimum = MinSpeed,
-                Maximum = MaxSliderSpeed,
-                TickFrequency = 10,
-                SmallChange = 1,
-                LargeChange = 10,
-                Value = _viewModel.CurrentSpeed,
-                Size = new Size(200, 45),
-            };
-            _speedSlider.Scroll += OnSpeedSliderScroll;
-            this.Controls.Add(_speedSlider);
-            _speedSlider.Anchor = AnchorStyles.Bottom;
+                _speedSlider = new TrackBar
+                {
+                    Minimum = _viewModel.MinSpeed,
+                    Maximum = _viewModel.MaxSpeed,
+                    TickFrequency = 10,
+                    SmallChange = 1,
+                    LargeChange = 10,
+                    Value = _viewModel.CurrentSpeed,
+                    Size = new Size(200, 45),
+                };
+                _speedSlider.Scroll += OnSpeedSliderScroll;
+                this.Controls.Add(_speedSlider);
+                _speedSlider.Anchor = AnchorStyles.Bottom;
+            }
+            else
+            {
+                _speedSlider.Minimum = _viewModel.MinSpeed;
+                _speedSlider.Maximum = _viewModel.MaxSpeed;
+                _speedSlider.Value = _viewModel.CurrentSpeed;
+            }
         }
+
 
         private void InitStartStopButton()
         {
@@ -126,7 +136,7 @@ namespace Viewer
         private void InitShapeSelector()
         {
             _shapeSelector = new ComboBox();
-            _shapeSelector.Location = new Point(10, 10);
+            _shapeSelector.Location = new Point(10, 10 + _menuStrip.Height);
             _shapeSelector.DropDownStyle = ComboBoxStyle.DropDownList;
             _shapeSelector.Items.AddRange(new object[] { "Тессеракт", "Пирамида", "Октаэдр", "Куб" });
             _shapeSelector.SelectedIndex = 0;
@@ -137,12 +147,25 @@ namespace Viewer
         private void InitProjectionSelector()
         {
             _projectionSelector = new ComboBox();
-            _projectionSelector.Location = new Point(10, 40);
+            _projectionSelector.Location = new Point(10, 40 + +_menuStrip.Height);
             _projectionSelector.DropDownStyle = ComboBoxStyle.DropDownList;
             _projectionSelector.Items.AddRange(new object[] { "Ортогональная", "Перспективная" });
             _projectionSelector.SelectedIndex = 1;
             _projectionSelector.SelectedIndexChanged += OnProjectionSelected;
             this.Controls.Add(_projectionSelector);
+        }
+
+        private void InitDrawStrategySelector()
+        {
+            _drawStrategySelector = new ComboBox
+            {
+                Location = new Point(10, 70 + _menuStrip.Height),
+                DropDownStyle = ComboBoxStyle.DropDownList
+            };
+            _drawStrategySelector.Items.AddRange(new object[] { "Без граней", "С гранями" });
+            _drawStrategySelector.SelectedIndex = 0;
+            _drawStrategySelector.SelectedIndexChanged += OnDrawStrategySelected;
+            this.Controls.Add(_drawStrategySelector);
         }
 
         private void InitZoomButtons()
@@ -188,7 +211,6 @@ namespace Viewer
         }
 
         //-----------------ОБРАБОТЧИКИ_СОБЫТИЙ-----------------
-
         private void OnSpeedTextBoxKeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
@@ -204,7 +226,7 @@ namespace Viewer
             _viewModel.UpdateSpeed(_speedSlider.Value);
         }
 
-        
+
         private void OnSpeedTextChanged(object sender, EventArgs e)
         {
             if (!int.TryParse(_speedTextBox.Text, out var newSpeed))
@@ -212,8 +234,8 @@ namespace Viewer
                 _speedTextBox.BackColor = Color.LightCoral;
                 return;
             }
-            
-            if (newSpeed < MinSpeed || newSpeed > MaxTextBoxSpeed)
+
+            if (newSpeed < _viewModel.MinSpeed || newSpeed > _viewModel.MaxSpeed)
             {
                 _speedTextBox.BackColor = Color.LightCoral;
                 return;
@@ -223,7 +245,7 @@ namespace Viewer
             _viewModel.UpdateSpeed(newSpeed);
 
             // если значение превышает максимум слайдера, оставляем слайдер на максимуме
-            _speedSlider.Value = newSpeed > MaxSliderSpeed ? MaxSliderSpeed : newSpeed;
+            _speedSlider.Value = newSpeed > _viewModel.MaxSpeed ? _viewModel.MaxSpeed : newSpeed;
         }
 
 
@@ -251,7 +273,6 @@ namespace Viewer
 
         private void OnZoomInClicked(object sender, EventArgs e)
         {
-            MessageBox.Show(_viewModel._rotationSpeed.ToString());
             _viewModel.ZoomIn();
             Invalidate();
         }

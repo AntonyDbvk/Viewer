@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 using Viewer.Model;
 using Viewer.Model.Shapes;
-using Viewer.Render.Strategy;
+using Viewer.Render.DrawStrategy;
 
 namespace Viewer.Render
 {

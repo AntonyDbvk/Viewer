@@ -3,6 +3,7 @@ using System.Drawing;
 using Viewer.Model.Shapes;
 using Viewer.Render;
 using Viewer.Model;
+using Viewer.Render.RotationSpeedStrategy;
 
 namespace Viewer.ViewModel
 {
@@ -10,22 +11,25 @@ namespace Viewer.ViewModel
     {
         private readonly Camera _camera;
         private readonly Renderer _renderer;
-        private Shape3D[] _shapes;  // все фигуры
-        private const float DefaultCameraZoom = 5f;
-        private const int DefaultSpeed = 45;  // начальная скорость
-        private const int MaxSpeed = 360;
-        private const float RotationFactor = 360; // коэффициент для расчета скорости вращения
+        private Shape3D[] _shapes;
         public Shape3D CurrentShape { get; private set; }
         public bool IsOrthogonal { get; set; }
         public bool IsAutoScrolling { get; private set; }
         public int CurrentSpeed { get; private set; } = DefaultSpeed;
-        public float _rotationSpeed;
+        private const float DefaultCameraZoom = 5f;
+        private const int DefaultSpeed = 45;
+        private float _rotationSpeed;
+        public int MinSpeed { get; set; } = 1;
+        public int MaxSpeed { get; set; } = 100;
+        private IRotationSpeedStrategy _rotationSpeedStrategy;
         private DrawStrategyType _currentDrawStrategy = DrawStrategyType.WithoutFaces;
+
 
         public ViewerViewModel()
         {
             _camera = new Camera(DefaultCameraZoom);
             _renderer = new Renderer();
+            _rotationSpeedStrategy = new SimpleRotationSpeedStrategy();
             Init_shapes();
             CurrentShape = _shapes[0];  // тессеракт по умолчанию
             UpdateRotationSpeed();
@@ -98,8 +102,17 @@ namespace Viewer.ViewModel
 
         private void UpdateRotationSpeed()
         {
-            float radians = CurrentSpeed * (float)(Math.PI / 180);
-            _rotationSpeed = radians * 100; 
+            _rotationSpeed = _rotationSpeedStrategy.CalculateRotationSpeed(CurrentSpeed);
         }
+
+        public void ToggleRotationSpeedStrategy()
+        {
+            _rotationSpeedStrategy = _rotationSpeedStrategy is SimpleRotationSpeedStrategy
+                ? (IRotationSpeedStrategy)new RotationSpeedStrategyByDegrees()
+                : new SimpleRotationSpeedStrategy();
+
+            MaxSpeed = MaxSpeed == 100 ? 360 : 100;
+        }
+
     }
 }
