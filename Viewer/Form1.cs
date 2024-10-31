@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using Viewer.UIComponents;
 using Viewer.ViewModel;
 
 namespace Viewer
@@ -8,6 +9,9 @@ namespace Viewer
     public sealed partial class Form1 : Form
     {
         private readonly ViewerViewModel _viewModel;
+        private readonly ColorSliderManager _colorSliderManager; // при помощи этого класса будем динамически
+                                                                 // обновлять слайдеры для изменения цветов ребер и граней
+                                                                 // пока что нет привязки слайдеров к цвету фигур.
         private bool _isDragging = false;
         private Point _startPosition;
         private ComboBox _shapeSelector;
@@ -20,6 +24,8 @@ namespace Viewer
         private TrackBar _speedSlider;
         private ComboBox _drawStrategySelector;
         private MenuStrip _menuStrip;
+        private ToolStripMenuItem _toggleSpeedMenuItem;
+
 
         public Form1()
         {
@@ -32,6 +38,7 @@ namespace Viewer
             this.MouseWheel += OnMouseWheel;
             this.Resize += OnResize;
             _viewModel = new ViewerViewModel();
+            _colorSliderManager = new ColorSliderManager(this);
             InitUi();
         }
 
@@ -45,6 +52,7 @@ namespace Viewer
             InitZoomButtons();
             InitAutoScrollControls();
             InitDrawStrategySelector();
+            UpdateSlidersBasedOnSelection();
         }
 
         private void InitAutoScrollControls()
@@ -59,18 +67,22 @@ namespace Viewer
         private void InitMenu()
         {
             _menuStrip = new MenuStrip();
-            var fileMenuItem = new ToolStripMenuItem("Меню");
+            var fileMenuItem = new ToolStripMenuItem("Параметры");
 
-            var toggleSpeedMenuItem = new ToolStripMenuItem("Скорость в градусах", null, (s, e) =>
+            _toggleSpeedMenuItem = new ToolStripMenuItem("Скорость в градусах", null, (s, e) =>
             {
                 _viewModel.ToggleRotationSpeedStrategy();
+                _toggleSpeedMenuItem.Checked = !_toggleSpeedMenuItem.Checked;
                 InitSpeedSlider();
-            });
+            })
+            {
+                Checked = false
+            };
 
-            fileMenuItem.DropDownItems.Add(toggleSpeedMenuItem);
+            fileMenuItem.DropDownItems.Add(_toggleSpeedMenuItem);
             _menuStrip.Items.Add(fileMenuItem);
             this.Controls.Add(_menuStrip);
-        }
+        }   
 
         private void InitSpeedSlider()
         {
@@ -94,7 +106,9 @@ namespace Viewer
             {
                 _speedSlider.Minimum = _viewModel.MinSpeed;
                 _speedSlider.Maximum = _viewModel.MaxSpeed;
-                _speedSlider.Value = _viewModel.CurrentSpeed;
+                _speedSlider.Value = _viewModel.CurrentSpeed > _speedSlider.Value
+                    ? _viewModel.MaxSpeed
+                    : _viewModel.CurrentSpeed;
             }
         }
 
@@ -128,7 +142,7 @@ namespace Viewer
         {
             _autoScrollTimer = new Timer
             {
-                Interval = 1 // частота тика 
+                Interval = 10 // частота тика 
             };
             _autoScrollTimer.Tick += OnAutoScrollTick;
         }
@@ -211,6 +225,7 @@ namespace Viewer
         }
 
         //-----------------ОБРАБОТЧИКИ_СОБЫТИЙ-----------------
+
         private void OnSpeedTextBoxKeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
@@ -285,9 +300,10 @@ namespace Viewer
 
         private void OnShapeSelected(object sender, EventArgs e)
         {
-            int selectedIndex = _shapeSelector.SelectedIndex;
-            _viewModel.ChangeShape(selectedIndex);  // изменяем текущую фигуру в ViewModel
+            _viewModel.ChangeShape(_drawStrategySelector.SelectedIndex);  // изменяем текущую фигуру в ViewModel
+            UpdateSlidersBasedOnSelection();
             Invalidate();  // обновляем отображение
+
         }
 
         private void OnPaint(object sender, PaintEventArgs e)
@@ -335,7 +351,20 @@ namespace Viewer
         private void OnDrawStrategySelected(object sender, EventArgs e)
         {
             _viewModel.ChangeDrawStrategy(_drawStrategySelector.SelectedIndex);
+
+            UpdateSlidersBasedOnSelection();
             Invalidate();
+        }
+
+
+        //-----------------ПРОЧИЕ_МЕТОДЫ-----------------
+
+
+        private void UpdateSlidersBasedOnSelection()
+        {
+            bool isTesseract = _shapeSelector.SelectedIndex == 0;
+            bool hasFaces = _drawStrategySelector.SelectedIndex == 1;
+            _colorSliderManager.InitializeSliders(isTesseract, hasFaces);
         }
 
     }

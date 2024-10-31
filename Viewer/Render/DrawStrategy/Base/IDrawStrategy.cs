@@ -2,7 +2,7 @@
 using Viewer.Model;
 using Viewer.Model.Shapes;
 
-namespace Viewer.Render.DrawStrategy
+namespace Viewer.Render.DrawStrategy.Base
 {
     public interface IDrawStrategy
     {

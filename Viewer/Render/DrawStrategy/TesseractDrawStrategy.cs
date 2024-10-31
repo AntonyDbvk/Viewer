@@ -22,7 +22,7 @@ namespace Viewer.Render.DrawStrategy
             ConnectCubes(g, settings, camera, outerVertices, innerVertices, clientSize, isOrthogonal);
         }
 
-        protected void ConnectCubes(Graphics g, DrawingSettings settings, Camera camera, Vertex[] outerVertices, Vertex[] innerVertices, Size clientSize, bool isOrthogonal)
+        private void ConnectCubes(Graphics g, DrawingSettings settings, Camera camera, Vertex[] outerVertices, Vertex[] innerVertices, Size clientSize, bool isOrthogonal)
         {
             Pen pen = new Pen(Color.Blue, 2);
             for (int i = 0; i < outerVertices.Length; i++)
@@ -33,5 +33,4 @@ namespace Viewer.Render.DrawStrategy
             }
         }
     }
-
 }

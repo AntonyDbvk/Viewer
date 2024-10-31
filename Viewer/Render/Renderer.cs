@@ -2,6 +2,7 @@
 using Viewer.Model;
 using Viewer.Model.Shapes;
 using Viewer.Render.DrawStrategy;
+using Viewer.Render.DrawStrategy.Base;
 
 namespace Viewer.Render
 {
@@ -28,7 +29,7 @@ namespace Viewer.Render
             if (shape is Tesseract)
             {
                 return drawStrategyType == DrawStrategyType.WithFaces
-                    ? new TesseractWithFacesDrawStrategy()
+                    ? (IDrawStrategy)new TesseractWithFacesDrawStrategy()
                     : new TesseractDrawStrategy();
             }
 
