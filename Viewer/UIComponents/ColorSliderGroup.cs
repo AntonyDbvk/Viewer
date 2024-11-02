@@ -11,14 +11,16 @@ namespace Viewer.UIComponents
         public TrackBar GreenSlider { get; }
         public TrackBar BlueSlider { get; }
         public TrackBar AlphaSlider { get; } // только для RGBA
+        public Label GroupLabel { get; } // подпись группы
 
         public event EventHandler<Color> ColorChanged;
 
-        public ColorSliderGroup(bool includeAlpha)
+        public ColorSliderGroup(bool includeAlpha, string labelText)
         {
             RedSlider = CreateSlider();
             GreenSlider = CreateSlider();
             BlueSlider = CreateSlider();
+            GroupLabel = new Label { Text = labelText, AutoSize = true };
 
             if (includeAlpha)
                 AlphaSlider = CreateSlider();
@@ -55,24 +57,25 @@ namespace Viewer.UIComponents
             ColorChanged?.Invoke(this, color);
         }
 
-        public void AddToForm(Form form)
+        public void AddToForm(Control parent)
         {
-            form.Controls.Add(RedSlider);
-            form.Controls.Add(GreenSlider);
-            form.Controls.Add(BlueSlider);
+            parent.Controls.Add(GroupLabel);
+            parent.Controls.Add(RedSlider);
+            parent.Controls.Add(GreenSlider);
+            parent.Controls.Add(BlueSlider);
             if (AlphaSlider != null)
-                form.Controls.Add(AlphaSlider);
+                parent.Controls.Add(AlphaSlider);
         }
 
         public void PositionSliders(Point location)
         {
             int spacing = 40;
-            RedSlider.Location = location;
-            GreenSlider.Location = new Point(location.X, location.Y + spacing);
-            BlueSlider.Location = new Point(location.X, location.Y + spacing * 2);
+            GroupLabel.Location = location;
+            RedSlider.Location = new Point(location.X, location.Y + spacing);
+            GreenSlider.Location = new Point(location.X, location.Y + spacing * 2);
+            BlueSlider.Location = new Point(location.X, location.Y + spacing * 3);
             if (AlphaSlider != null)
-                AlphaSlider.Location = new Point(location.X, location.Y + spacing * 3);
+                AlphaSlider.Location = new Point(location.X, location.Y + spacing * 4);
         }
     }
-
 }
