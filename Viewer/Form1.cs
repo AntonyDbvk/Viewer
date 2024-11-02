@@ -12,7 +12,7 @@ namespace Viewer
         private readonly ColorSliderManager _colorSliderManager; // при помощи этого класса будем динамически
                                                                  // обновлять слайдеры для изменения цветов ребер и граней
                                                                  // пока что нет привязки слайдеров к цвету фигур.
-        private bool _isDragging = false;
+        private bool _isDragging ;
         private Point _startPosition;
         private ComboBox _shapeSelector;
         private ComboBox _projectionSelector;
@@ -30,13 +30,13 @@ namespace Viewer
         public Form1()
         {
             InitializeComponent();
-            this.DoubleBuffered = true;
-            this.Paint += OnPaint;
-            this.MouseDown += OnMouseDown;
-            this.MouseMove += OnMouseMove;
-            this.MouseUp += OnMouseUp;
-            this.MouseWheel += OnMouseWheel;
-            this.Resize += OnResize;
+            DoubleBuffered = true;
+            Paint += OnPaint;
+            MouseDown += OnMouseDown;
+            MouseMove += OnMouseMove;
+            MouseUp += OnMouseUp;
+            MouseWheel += OnMouseWheel;
+            Resize += OnResize;
             _viewModel = new ViewerViewModel();
             _colorSliderManager = new ColorSliderManager(this);
             InitUi();
@@ -81,7 +81,7 @@ namespace Viewer
 
             fileMenuItem.DropDownItems.Add(_toggleSpeedMenuItem);
             _menuStrip.Items.Add(fileMenuItem);
-            this.Controls.Add(_menuStrip);
+            Controls.Add(_menuStrip);
         }   
 
         private void InitSpeedSlider()
@@ -99,7 +99,7 @@ namespace Viewer
                     Size = new Size(200, 45),
                 };
                 _speedSlider.Scroll += OnSpeedSliderScroll;
-                this.Controls.Add(_speedSlider);
+                Controls.Add(_speedSlider);
                 _speedSlider.Anchor = AnchorStyles.Bottom;
             }
             else
@@ -121,7 +121,7 @@ namespace Viewer
                 Size = new Size(60, 30)
             };
             _startStopButton.Click += OnStartStopClicked;
-            this.Controls.Add(_startStopButton);
+            Controls.Add(_startStopButton);
             _startStopButton.Anchor = AnchorStyles.Bottom;
         }
 
@@ -134,7 +134,7 @@ namespace Viewer
             };
             _speedTextBox.KeyDown += OnSpeedTextBoxKeyDown;
             _speedTextBox.TextChanged += OnSpeedTextChanged;
-            this.Controls.Add(_speedTextBox);
+            Controls.Add(_speedTextBox);
             _speedTextBox.Anchor = AnchorStyles.Bottom;
         }
 
@@ -155,7 +155,7 @@ namespace Viewer
             _shapeSelector.Items.AddRange(new object[] { "Тессеракт", "Пирамида", "Октаэдр", "Куб" });
             _shapeSelector.SelectedIndex = 0;
             _shapeSelector.SelectedIndexChanged += OnShapeSelected;
-            this.Controls.Add(_shapeSelector);
+            Controls.Add(_shapeSelector);
         }
 
         private void InitProjectionSelector()
@@ -166,7 +166,7 @@ namespace Viewer
             _projectionSelector.Items.AddRange(new object[] { "Ортогональная", "Перспективная" });
             _projectionSelector.SelectedIndex = 1;
             _projectionSelector.SelectedIndexChanged += OnProjectionSelected;
-            this.Controls.Add(_projectionSelector);
+            Controls.Add(_projectionSelector);
         }
 
         private void InitDrawStrategySelector()
@@ -179,7 +179,7 @@ namespace Viewer
             _drawStrategySelector.Items.AddRange(new object[] { "Без граней", "С гранями" });
             _drawStrategySelector.SelectedIndex = 0;
             _drawStrategySelector.SelectedIndexChanged += OnDrawStrategySelected;
-            this.Controls.Add(_drawStrategySelector);
+            Controls.Add(_drawStrategySelector);
         }
 
         private void InitZoomButtons()
@@ -194,15 +194,15 @@ namespace Viewer
             _zoomOutButton.Size = new Size(40, 40);
             _zoomOutButton.Click += OnZoomOutClicked;
 
-            this.Controls.Add(_zoomInButton);
-            this.Controls.Add(_zoomOutButton);
+            Controls.Add(_zoomInButton);
+            Controls.Add(_zoomOutButton);
 
             int margin = 10;
 
-            _zoomInButton.Location = new Point(this.ClientSize.Width - _zoomInButton.Width - margin,
-                                              this.ClientSize.Height - _zoomInButton.Height - margin);
+            _zoomInButton.Location = new Point(ClientSize.Width - _zoomInButton.Width - margin,
+                                              ClientSize.Height - _zoomInButton.Height - margin);
             _zoomOutButton.Location = new Point(_zoomInButton.Left - _zoomOutButton.Width - margin,
-                                               this.ClientSize.Height - _zoomOutButton.Height - margin);
+                                               ClientSize.Height - _zoomOutButton.Height - margin);
 
             // привязка кнопок к нижнему правому краю
             _zoomInButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
@@ -216,8 +216,8 @@ namespace Viewer
             int textBoxWidth = _speedTextBox.Width;
             int sliderWidth = _speedSlider.Width;
 
-            int centerX = (this.ClientSize.Width - buttonWidth) / 2;
-            _startStopButton.Location = new Point(centerX, this.ClientSize.Height - _startStopButton.Height - margin);
+            int centerX = (ClientSize.Width - buttonWidth) / 2;
+            _startStopButton.Location = new Point(centerX, ClientSize.Height - _startStopButton.Height - margin);
 
             _speedTextBox.Location = new Point(_startStopButton.Left - textBoxWidth - margin, _startStopButton.Top);
 
@@ -230,7 +230,7 @@ namespace Viewer
         {
             if (e.KeyCode == Keys.Enter)
             {
-                this.ActiveControl = null;
+                ActiveControl = null;
                 e.Handled = true;
             }
         }
@@ -300,7 +300,7 @@ namespace Viewer
 
         private void OnShapeSelected(object sender, EventArgs e)
         {
-            _viewModel.ChangeShape(_drawStrategySelector.SelectedIndex);  // изменяем текущую фигуру в ViewModel
+            _viewModel.ChangeShape(_shapeSelector.SelectedIndex);  // изменяем текущую фигуру в ViewModel
             UpdateSlidersBasedOnSelection();
             Invalidate();  // обновляем отображение
 
@@ -309,7 +309,7 @@ namespace Viewer
         private void OnPaint(object sender, PaintEventArgs e)
         {
             e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias; // сглаживание при отрисовке
-            _viewModel.Draw(e.Graphics, this.ClientSize);
+            _viewModel.Draw(e.Graphics, ClientSize);
         }
 
         // начало движения мыши

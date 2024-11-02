@@ -16,12 +16,13 @@ namespace Viewer.Render.DrawStrategy
             var outerVertices = tesseract.Vertices;
             var outerEdges = tesseract.Edges;
             var innerVertices = tesseract.InnerVertices;
-            var innerEdges = tesseract.InnerEdges;
+            var innerEdges = tesseract.Edges;
+            var faces = tesseract.Faces;
 
-            DrawFaces(g, innerVertices, innerEdges, new HatchBrush(HatchStyle.DarkUpwardDiagonal, Color.LightBlue), camera, clientSize, isOrthogonal);
+            DrawFaces(g, innerVertices, faces, new HatchBrush(HatchStyle.DarkUpwardDiagonal, Color.LightBlue), camera, clientSize, isOrthogonal);
             DrawEdges(g, innerVertices, innerEdges, settings.InnerPen, camera, clientSize, isOrthogonal);
 
-            DrawFaces(g, outerVertices, outerEdges, new SolidBrush(Color.FromArgb(50, Color.Violet)), camera, clientSize, isOrthogonal);
+            DrawFaces(g, outerVertices, faces, new SolidBrush(Color.FromArgb(50, Color.Violet)), camera, clientSize, isOrthogonal);
             DrawEdges(g, outerVertices, outerEdges, settings.EdgePen, camera, clientSize, isOrthogonal);
 
             ConnectCubes(g, settings, camera, outerVertices, innerVertices, clientSize, isOrthogonal);

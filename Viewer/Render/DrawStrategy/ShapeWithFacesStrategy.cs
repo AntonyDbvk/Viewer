@@ -11,8 +11,9 @@ namespace Viewer.Render.DrawStrategy
         {
             var vertices = model.Vertices;
             var edges = model.Edges;
+            var faces = model.Faces;
 
-            DrawFaces(g, vertices, edges, new SolidBrush(Color.FromArgb(20, Color.Violet)), camera, clientSize, isOrthogonal);
+            DrawFaces(g, vertices, faces, new SolidBrush(Color.FromArgb(255, Color.Violet)), camera, clientSize, isOrthogonal);
             DrawEdges(g, vertices, edges, settings.EdgePen, camera, clientSize, isOrthogonal);
         }
     }

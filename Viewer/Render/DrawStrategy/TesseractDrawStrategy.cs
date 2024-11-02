@@ -15,7 +15,7 @@ namespace Viewer.Render.DrawStrategy
             var outerEdges = tesseract.Edges;
 
             var innerVertices = tesseract.InnerVertices;
-            var innerEdges = tesseract.InnerEdges;
+            var innerEdges = tesseract.Edges;
 
             DrawEdges(g, outerVertices, outerEdges, settings.EdgePen, camera, clientSize, isOrthogonal);
             DrawEdges(g, innerVertices, innerEdges, settings.InnerPen, camera, clientSize, isOrthogonal);
