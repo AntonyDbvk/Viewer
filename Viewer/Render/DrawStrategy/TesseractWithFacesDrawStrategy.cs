@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Drawing.Drawing2D;
 using Viewer.Model;
 using Viewer.Model.Geometry;
@@ -19,13 +20,14 @@ namespace Viewer.Render.DrawStrategy
             var innerEdges = tesseract.Edges;
             var faces = tesseract.Faces;
 
-            DrawFaces(g, innerVertices, faces, new HatchBrush(HatchStyle.DarkUpwardDiagonal, Color.LightBlue), camera, clientSize, isOrthogonal);
-            DrawEdges(g, innerVertices, innerEdges, settings.InnerPen, camera, clientSize, isOrthogonal);
-
-            DrawFaces(g, outerVertices, faces, new SolidBrush(Color.FromArgb(50, Color.Violet)), camera, clientSize, isOrthogonal);
-            DrawEdges(g, outerVertices, outerEdges, settings.EdgePen, camera, clientSize, isOrthogonal);
+            DrawFaces(g, innerVertices, faces, settings.FaceBrush1, camera, clientSize, isOrthogonal);
+            DrawEdges(g, innerVertices, innerEdges, settings.EdgePen1, camera, clientSize, isOrthogonal);
 
             ConnectCubes(g, settings, camera, outerVertices, innerVertices, clientSize, isOrthogonal);
+
+            DrawFaces(g, outerVertices, faces, settings.FaceBrush2, camera, clientSize, isOrthogonal);
+            DrawEdges(g, outerVertices, outerEdges, settings.EdgePen2, camera, clientSize, isOrthogonal);
+
         }
 
         private void ConnectCubes(Graphics g, DrawingSettings settings, Camera camera, Vertex[] outerVertices, Vertex[] innerVertices, Size clientSize, bool isOrthogonal)

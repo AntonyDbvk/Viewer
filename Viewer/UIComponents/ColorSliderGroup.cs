@@ -15,6 +15,7 @@ namespace Viewer.UIComponents
 
         public event EventHandler<Color> ColorChanged;
 
+
         public ColorSliderGroup(bool includeAlpha, string labelText)
         {
             RedSlider = CreateSlider();
@@ -42,18 +43,19 @@ namespace Viewer.UIComponents
 
         private void SetupSliderEvents()
         {
-            RedSlider.Scroll += (s, e) => OnColorChanged();
-            GreenSlider.Scroll += (s, e) => OnColorChanged();
-            BlueSlider.Scroll += (s, e) => OnColorChanged();
+            RedSlider.Scroll += (s, e) => NotifyColorChanged();
+            GreenSlider.Scroll += (s, e) => NotifyColorChanged();
+            BlueSlider.Scroll += (s, e) => NotifyColorChanged();
             if (AlphaSlider != null)
-                AlphaSlider.Scroll += (s, e) => OnColorChanged();
+                AlphaSlider.Scroll += (s, e) => NotifyColorChanged();
         }
 
-        private void OnColorChanged()
+        private void NotifyColorChanged()
         {
             var color = AlphaSlider != null
                 ? Color.FromArgb(AlphaSlider.Value, RedSlider.Value, GreenSlider.Value, BlueSlider.Value)
                 : Color.FromArgb(RedSlider.Value, GreenSlider.Value, BlueSlider.Value);
+
             ColorChanged?.Invoke(this, color);
         }
 

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using Viewer.Render;
 
 namespace Viewer.UIComponents
 {
@@ -77,7 +78,24 @@ namespace Viewer.UIComponents
 
         private void OnSliderColorChanged(object sender, Color color)
         {
-            // Event handler for slider color changes
+            var sliderGroup = (ColorSliderGroup)sender;
+
+            if (edgeSliderGroups.Contains(sliderGroup))
+            {
+                if (edgeSliderGroups.IndexOf(sliderGroup) == 0) 
+                    DrawingSettings.Instance.EdgePen1.Color = color;
+                else 
+                    DrawingSettings.Instance.EdgePen2.Color = color;
+            }
+            else if (faceSliderGroups.Contains(sliderGroup))
+            {
+                if (faceSliderGroups.IndexOf(sliderGroup) == 0) 
+                    DrawingSettings.Instance.FaceBrush1 = new SolidBrush(color);
+                else
+                    DrawingSettings.Instance.FaceBrush2 = new SolidBrush(color);
+            }
+
+            _form.Invalidate();
         }
 
         private void RepositionSliders()

@@ -12,7 +12,7 @@ namespace Viewer.Render.DrawStrategy
             var vertices = model.Vertices;
             var edges = model.Edges;
 
-            DrawEdges(g, vertices, edges, settings.EdgePen, camera, clientSize, isOrthogonal);
+            DrawEdges(g, vertices, edges, settings.EdgePen1, camera, clientSize, isOrthogonal);
         }
     }
 }

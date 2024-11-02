@@ -17,8 +17,8 @@ namespace Viewer.Render.DrawStrategy
             var innerVertices = tesseract.InnerVertices;
             var innerEdges = tesseract.Edges;
 
-            DrawEdges(g, outerVertices, outerEdges, settings.EdgePen, camera, clientSize, isOrthogonal);
-            DrawEdges(g, innerVertices, innerEdges, settings.InnerPen, camera, clientSize, isOrthogonal);
+            DrawEdges(g, outerVertices, outerEdges, settings.EdgePen1, camera, clientSize, isOrthogonal);
+            DrawEdges(g, innerVertices, innerEdges, settings.EdgePen2, camera, clientSize, isOrthogonal);
             ConnectCubes(g, settings, camera, outerVertices, innerVertices, clientSize, isOrthogonal);
         }
 

@@ -8,14 +8,11 @@ namespace Viewer.Render
 {
     public class Renderer
     {
-        private readonly DrawingSettings _drawingSettings;
+        private DrawingSettings _drawingSettings;
         private IDrawStrategy _drawStrategy;
         public Renderer()
         {
-            _drawingSettings = new DrawingSettings
-            {
-                EdgePen = new Pen(Color.Black, 2)
-            };
+            _drawingSettings = DrawingSettings.Instance;
         }
 
         public void DrawShape(Graphics g, Shape3D shape, Camera camera, Size clientSize, bool isOrthogonal, DrawStrategyType drawStrategyType)

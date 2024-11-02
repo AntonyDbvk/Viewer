@@ -54,12 +54,12 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Render\DrawingSettings.cs" />
     <Compile Include="Render\DrawStrategyType.cs" />
     <Compile Include="Render\DrawStrategy\Base\DrawStrategyBase.cs" />
     <Compile Include="Render\DrawStrategy\Base\FaceDrawStrategyBase.cs" />
     <Compile Include="Render\Renderer.cs" />
     <Compile Include="Model\Shapes\Cube.cs" />
-    <Compile Include="Model\DrawingSettings.cs" />
     <Compile Include="Model\Geometry\Edge.cs" />
     <Compile Include="Model\Geometry\Vertex.cs" />
     <Compile Include="Model\Shapes\Octahedron.cs" />
