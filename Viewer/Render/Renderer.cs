@@ -8,7 +8,7 @@ namespace Viewer.Render
 {
     public class Renderer
     {
-        private DrawingSettings _drawingSettings;
+        private readonly DrawingSettings _drawingSettings;
         private IDrawStrategy _drawStrategy;
         public Renderer()
         {

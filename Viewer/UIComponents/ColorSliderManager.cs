@@ -8,14 +8,14 @@ namespace Viewer.UIComponents
     public class ColorSliderManager
     {
         private readonly Form _form;
-        private readonly List<ColorSliderGroup> edgeSliderGroups;
-        private readonly List<ColorSliderGroup> faceSliderGroups;
+        private readonly List<ColorSliderGroup> _edgeSliderGroups;
+        private readonly List<ColorSliderGroup> _faceSliderGroups;
 
         public ColorSliderManager(Form form)
         {
             _form = form;
-            edgeSliderGroups = new List<ColorSliderGroup>();
-            faceSliderGroups = new List<ColorSliderGroup>();
+            _edgeSliderGroups = new List<ColorSliderGroup>();
+            _faceSliderGroups = new List<ColorSliderGroup>();
             _form.Resize += (s, e) => RepositionSliders();
         }
 
@@ -24,72 +24,59 @@ namespace Viewer.UIComponents
             ClearSliders();
             var (withoutAlpha, withAlpha) = GetSliderGroupCounts(isTesseract, hasFaces);
 
-            for (int i = 0; i < withoutAlpha; i++)
-            {
-                string labelText = $"Слайдер для рёбер {i + 1}";
-                var edgeSliderGroup = new ColorSliderGroup(includeAlpha: false, labelText);
-                edgeSliderGroup.AddToForm(_form);
-                edgeSliderGroups.Add(edgeSliderGroup);
-                edgeSliderGroup.ColorChanged += OnSliderColorChanged;
-            }
-
-            for (int i = 0; i < withAlpha; i++)
-            {
-                string labelText = $"Слайдер для граней {i + 1}";
-                var faceSliderGroup = new ColorSliderGroup(includeAlpha: true, labelText);
-                faceSliderGroup.AddToForm(_form);
-                faceSliderGroups.Add(faceSliderGroup);
-                faceSliderGroup.ColorChanged += OnSliderColorChanged;
-            }
+            CreateSliderGroups(_edgeSliderGroups, withoutAlpha, false, "Слайдер для рёбер");
+            CreateSliderGroups(_faceSliderGroups, withAlpha, true, "Слайдер для граней");
 
             RepositionSliders();
         }
 
-        private void ClearSliders()
+        private void CreateSliderGroups(List<ColorSliderGroup> sliderGroups, int count, bool includeAlpha, string labelBaseText)
         {
-            foreach (var group in edgeSliderGroups)
+            for (int i = 0; i < count; i++)
             {
-                RemoveGroupFromForm(group);
+                var sliderGroup = new ColorSliderGroup(includeAlpha, $"{labelBaseText} {i + 1}");
+                sliderGroup.AddToForm(_form);
+                sliderGroups.Add(sliderGroup);
+                sliderGroup.ColorChanged += OnSliderColorChanged;
             }
-            foreach (var group in faceSliderGroups)
-            {
-                RemoveGroupFromForm(group);
-            }
-
-            edgeSliderGroups.Clear();
-            faceSliderGroups.Clear();
         }
 
-        private void RemoveGroupFromForm(ColorSliderGroup group)
+
+        private void ClearSliders()
         {
-            _form.Controls.Remove(group.RedSlider);
-            _form.Controls.Remove(group.GreenSlider);
-            _form.Controls.Remove(group.BlueSlider);
-            _form.Controls.Remove(group.GroupLabel);
-            if (group.AlphaSlider != null)
-                _form.Controls.Remove(group.AlphaSlider);
+            ClearSliderGroups(_edgeSliderGroups);
+            ClearSliderGroups(_faceSliderGroups);
+        }
+
+        private void ClearSliderGroups(List<ColorSliderGroup> sliderGroups)
+        {
+            foreach (var group in sliderGroups)
+            {
+                group.Remove(_form);
+            }
+            sliderGroups.Clear();
         }
 
         private (int withoutAlpha, int withAlpha) GetSliderGroupCounts(bool isTesseract, bool hasFaces)
         {
-            if (!isTesseract) return hasFaces ? (1, 1) : (1, 0);
-            return hasFaces ? (2, 2) : (2, 0);
+            return isTesseract ? (hasFaces ? (2, 2) : (2, 0)) : (hasFaces ? (1, 1) : (1, 0));
         }
+
 
         private void OnSliderColorChanged(object sender, Color color)
         {
             var sliderGroup = (ColorSliderGroup)sender;
 
-            if (edgeSliderGroups.Contains(sliderGroup))
+            if (_edgeSliderGroups.Contains(sliderGroup))
             {
-                if (edgeSliderGroups.IndexOf(sliderGroup) == 0) 
+                if (_edgeSliderGroups.IndexOf(sliderGroup) == 0) 
                     DrawingSettings.Instance.EdgePen1.Color = color;
                 else 
                     DrawingSettings.Instance.EdgePen2.Color = color;
             }
-            else if (faceSliderGroups.Contains(sliderGroup))
+            else if (_faceSliderGroups.Contains(sliderGroup))
             {
-                if (faceSliderGroups.IndexOf(sliderGroup) == 0) 
+                if (_faceSliderGroups.IndexOf(sliderGroup) == 0) 
                     DrawingSettings.Instance.FaceBrush1 = new SolidBrush(color);
                 else
                     DrawingSettings.Instance.FaceBrush2 = new SolidBrush(color);
@@ -104,9 +91,10 @@ namespace Viewer.UIComponents
             int faceXOffset = _form.ClientSize.Width - 310; // левее для граней
             int initialY = 40;
             int groupSpacing = 220;
+            Color color = Color.BlueViolet;
 
-            PositionSliderGroup(edgeXOffset, initialY, groupSpacing, edgeSliderGroups);
-            PositionSliderGroup(faceXOffset, initialY, groupSpacing, faceSliderGroups);
+            PositionSliderGroup(edgeXOffset, initialY, groupSpacing, _edgeSliderGroups);
+            PositionSliderGroup(faceXOffset, initialY, groupSpacing, _faceSliderGroups);
         }
 
         private void PositionSliderGroup(int xOffset, int initialY, int groupSpacing, List<ColorSliderGroup> sliderGroups)

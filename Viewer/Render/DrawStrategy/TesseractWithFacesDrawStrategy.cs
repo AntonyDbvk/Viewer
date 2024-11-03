@@ -20,10 +20,10 @@ namespace Viewer.Render.DrawStrategy
             var innerEdges = tesseract.Edges;
             var faces = tesseract.Faces;
 
+            ConnectCubes(g, settings, camera, outerVertices, innerVertices, clientSize, isOrthogonal);
+
             DrawFaces(g, innerVertices, faces, settings.FaceBrush1, camera, clientSize, isOrthogonal);
             DrawEdges(g, innerVertices, innerEdges, settings.EdgePen1, camera, clientSize, isOrthogonal);
-
-            ConnectCubes(g, settings, camera, outerVertices, innerVertices, clientSize, isOrthogonal);
 
             DrawFaces(g, outerVertices, faces, settings.FaceBrush2, camera, clientSize, isOrthogonal);
             DrawEdges(g, outerVertices, outerEdges, settings.EdgePen2, camera, clientSize, isOrthogonal);

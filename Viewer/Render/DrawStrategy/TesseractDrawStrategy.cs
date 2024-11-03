@@ -9,17 +9,16 @@ namespace Viewer.Render.DrawStrategy
     {
         public override void Draw(Graphics g, Shape3D model, DrawingSettings settings, Camera camera, Size clientSize, bool isOrthogonal)
         {
-            var tesseract = model as Tesseract;
-
+            if (!(model is Tesseract tesseract)) return;
             var outerVertices = tesseract.Vertices;
             var outerEdges = tesseract.Edges;
 
             var innerVertices = tesseract.InnerVertices;
             var innerEdges = tesseract.Edges;
 
-            DrawEdges(g, outerVertices, outerEdges, settings.EdgePen1, camera, clientSize, isOrthogonal);
-            DrawEdges(g, innerVertices, innerEdges, settings.EdgePen2, camera, clientSize, isOrthogonal);
             ConnectCubes(g, settings, camera, outerVertices, innerVertices, clientSize, isOrthogonal);
+            DrawEdges(g, innerVertices, innerEdges, settings.EdgePen2, camera, clientSize, isOrthogonal);
+            DrawEdges(g, outerVertices, outerEdges, settings.EdgePen1, camera, clientSize, isOrthogonal);
         }
 
         private void ConnectCubes(Graphics g, DrawingSettings settings, Camera camera, Vertex[] outerVertices, Vertex[] innerVertices, Size clientSize, bool isOrthogonal)

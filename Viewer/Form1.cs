@@ -142,7 +142,7 @@ namespace Viewer
         {
             _autoScrollTimer = new Timer
             {
-                Interval = 10 // частота тика 
+                Interval = 13 // частота тика 
             };
             _autoScrollTimer.Tick += OnAutoScrollTick;
         }
