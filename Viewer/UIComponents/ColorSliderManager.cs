@@ -24,8 +24,8 @@ namespace Viewer.UIComponents
             ClearSliders();
             var (withoutAlpha, withAlpha) = GetSliderGroupCounts(isTesseract, hasFaces);
 
-            CreateSliderGroups(_edgeSliderGroups, withoutAlpha, false, "Слайдер для рёбер");
-            CreateSliderGroups(_faceSliderGroups, withAlpha, true, "Слайдер для граней");
+            CreateSliderGroups(_edgeSliderGroups, withoutAlpha, false, "Цвет для рёбер");
+            CreateSliderGroups(_faceSliderGroups, withAlpha, true, "Цвет для граней");
 
             RepositionSliders();
         }
@@ -90,7 +90,7 @@ namespace Viewer.UIComponents
             int edgeXOffset = _form.ClientSize.Width - 130; // правый край для рёбер
             int faceXOffset = _form.ClientSize.Width - 310; // левее для граней
             int initialY = 40;
-            int groupSpacing = 220;
+            int groupSpacing = 280;
             Color color = Color.BlueViolet;
 
             PositionSliderGroup(edgeXOffset, initialY, groupSpacing, _edgeSliderGroups);

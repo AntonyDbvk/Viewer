@@ -15,6 +15,8 @@ namespace Viewer.UIComponents
         private Label GreenLabel { get; }
         private Label BlueLabel { get; }
         private Label AlphaLabel { get; }
+        public Button ColorDialogButton { get; }
+        private readonly ColorDialog _colorDialog;
 
         public event EventHandler<Color> ColorChanged;
 
@@ -27,7 +29,8 @@ namespace Viewer.UIComponents
             RedLabel = CreateColorLabel("R");
             GreenLabel = CreateColorLabel("G");
             BlueLabel = CreateColorLabel("B");
-
+            ColorDialogButton = new Button { Text = "Цвет" };
+            _colorDialog = new ColorDialog();
             if (includeAlpha)
             {
                 AlphaSlider = CreateSlider();
@@ -35,6 +38,7 @@ namespace Viewer.UIComponents
             }
 
             SetupSliderEvents();
+            SetupColorDialogButton();
         }
 
         private TrackBar CreateSlider()
@@ -68,6 +72,19 @@ namespace Viewer.UIComponents
                 AlphaSlider.Scroll += (s, e) => NotifyColorChanged();
         }
 
+        private void SetupColorDialogButton()
+        {
+            ColorDialogButton.Click += (s, e) =>
+            {
+                if (_colorDialog.ShowDialog() == DialogResult.OK)
+                {
+                    var selectedColor = _colorDialog.Color;
+                    UpdateSlidersFromColor(selectedColor);
+                    NotifyColorChanged();
+                }
+            };
+        }
+
         private void NotifyColorChanged()
         {
             var color = AlphaSlider != null
@@ -86,17 +103,17 @@ namespace Viewer.UIComponents
             parent.Controls.Add(RedLabel);
             parent.Controls.Add(GreenLabel);
             parent.Controls.Add(BlueLabel);
-
             if (AlphaSlider != null)
             {
                 parent.Controls.Add(AlphaSlider);
                 parent.Controls.Add(AlphaLabel);
             }
+            parent.Controls.Add(ColorDialogButton);
         }
 
         public void PositionSliders(Point location)
         {
-            const int spacing = 40;
+            const int spacing = 50;
             const int labelOffset = -20;
 
             GroupLabel.Location = location;
@@ -110,9 +127,14 @@ namespace Viewer.UIComponents
             BlueLabel.Location = new Point(location.X + labelOffset, location.Y + spacing * 3);
             BlueSlider.Location = new Point(location.X, location.Y + spacing * 3);
 
-            if (AlphaSlider == null) return;
-            AlphaLabel.Location = new Point(location.X + labelOffset, location.Y + spacing * 4);
-            AlphaSlider.Location = new Point(location.X, location.Y + spacing * 4);
+            if (AlphaSlider != null)
+            {
+                AlphaLabel.Location = new Point(location.X + labelOffset, location.Y + spacing * 4);
+                AlphaSlider.Location = new Point(location.X, location.Y + spacing * 4);
+                ColorDialogButton.Location = new Point(location.X, location.Y + spacing * 5);
+            }
+
+            else ColorDialogButton.Location = new Point(location.X, location.Y + spacing * 4);
         }
 
         public void Remove(Form form)
@@ -126,7 +148,18 @@ namespace Viewer.UIComponents
             form.Controls.Remove(RedLabel);
             form.Controls.Remove(GreenLabel);
             form.Controls.Remove(BlueLabel);
+            form.Controls.Remove(ColorDialogButton);
+            _colorDialog.Dispose();
             if (AlphaLabel != null) form.Controls.Remove(AlphaLabel);
+        }
+
+        private void UpdateSlidersFromColor(Color color)
+        {
+            RedSlider.Value = color.R;
+            GreenSlider.Value = color.G;
+            BlueSlider.Value = color.B;
+            if (AlphaSlider != null)
+                AlphaSlider.Value = color.A;
         }
     }
 }

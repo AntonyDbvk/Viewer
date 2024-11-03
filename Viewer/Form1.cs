@@ -9,9 +9,9 @@ namespace Viewer
     public sealed partial class Form1 : Form
     {
         private readonly ViewerViewModel _viewModel;
-        private readonly ColorSliderManager _colorSliderManager; // при помощи этого класса будем динамически
-                                                                 // обновлять слайдеры для изменения цветов ребер и граней
-                                                                 // пока что нет привязки слайдеров к цвету фигур.
+        private readonly ColorSliderManager _colorSliderManager; 
+                                                                 
+                                                                 
         private bool _isDragging ;
         private Point _startPosition;
         private ComboBox _shapeSelector;
