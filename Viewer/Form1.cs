@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using Viewer.Resources.Localization;
 using Viewer.UIComponents;
 using Viewer.ViewModel;
 
@@ -9,10 +10,9 @@ namespace Viewer
     public sealed partial class Form1 : Form
     {
         private readonly ViewerViewModel _viewModel;
-        private readonly ColorSliderManager _colorSliderManager; 
-                                                                 
-                                                                 
-        private bool _isDragging ;
+        private readonly ColorSliderManager _colorSliderManager;
+        private readonly Localizer _localizer;
+        private bool _isDragging;
         private Point _startPosition;
         private ComboBox _shapeSelector;
         private ComboBox _projectionSelector;
@@ -25,6 +25,8 @@ namespace Viewer
         private ComboBox _drawStrategySelector;
         private MenuStrip _menuStrip;
         private ToolStripMenuItem _toggleSpeedMenuItem;
+        private ToolStripMenuItem _languageMenuItem;
+        private ToolStripMenuItem _fileMenuItem;
 
 
         public Form1()
@@ -39,6 +41,8 @@ namespace Viewer
             Resize += OnResize;
             _viewModel = new ViewerViewModel();
             _colorSliderManager = new ColorSliderManager(this);
+            _localizer = Localizer.Instance();
+            _localizer.CultureChanged += UpdateLocalizedText;
             InitUi();
         }
 
@@ -67,9 +71,9 @@ namespace Viewer
         private void InitMenu()
         {
             _menuStrip = new MenuStrip();
-            var fileMenuItem = new ToolStripMenuItem("Параметры");
+             _fileMenuItem = new ToolStripMenuItem(_localizer.GetString("Options"));
 
-            _toggleSpeedMenuItem = new ToolStripMenuItem("Скорость в градусах", null, (s, e) =>
+            _toggleSpeedMenuItem = new ToolStripMenuItem(_localizer.GetString("SpeedInDegrees"), null, (s, e) =>
             {
                 _viewModel.ToggleRotationSpeedStrategy();
                 _toggleSpeedMenuItem.Checked = !_toggleSpeedMenuItem.Checked;
@@ -79,10 +83,25 @@ namespace Viewer
                 Checked = false
             };
 
-            fileMenuItem.DropDownItems.Add(_toggleSpeedMenuItem);
-            _menuStrip.Items.Add(fileMenuItem);
+             _languageMenuItem = new ToolStripMenuItem(_localizer.GetString("Language"));
+            var russianMenuItem = new ToolStripMenuItem("Русский", null, (s, e) => ChangeLanguage("ru-RU"));
+            var englishMenuItem = new ToolStripMenuItem("English", null, (s, e) => ChangeLanguage("en-US"));
+
+            _languageMenuItem.DropDownItems.Add(russianMenuItem);
+            _languageMenuItem.DropDownItems.Add(englishMenuItem);
+
+            _fileMenuItem.DropDownItems.Add(_toggleSpeedMenuItem);
+            _fileMenuItem.DropDownItems.Add(_languageMenuItem);
+            _menuStrip.Items.Add(_fileMenuItem);
             Controls.Add(_menuStrip);
-        }   
+        }
+
+        private void ChangeLanguage(string cultureCode)
+        {
+            _localizer.SetCulture(cultureCode); 
+            UpdateLocalizedText(); 
+        }
+
 
         private void InitSpeedSlider()
         {
@@ -117,7 +136,6 @@ namespace Viewer
         {
             _startStopButton = new Button
             {
-                Text = "Start",
                 Size = new Size(60, 30)
             };
             _startStopButton.Click += OnStartStopClicked;
@@ -152,7 +170,13 @@ namespace Viewer
             _shapeSelector = new ComboBox();
             _shapeSelector.Location = new Point(10, 10 + _menuStrip.Height);
             _shapeSelector.DropDownStyle = ComboBoxStyle.DropDownList;
-            _shapeSelector.Items.AddRange(new object[] { "Тессеракт", "Пирамида", "Октаэдр", "Куб" });
+            _shapeSelector.Items.AddRange(new object[]
+            {
+                _localizer.GetString("Tesseract"),
+                _localizer.GetString("Pyramid"),
+                _localizer.GetString("Octahedron"),
+                _localizer.GetString("Cube")
+            });
             _shapeSelector.SelectedIndex = 0;
             _shapeSelector.SelectedIndexChanged += OnShapeSelected;
             Controls.Add(_shapeSelector);
@@ -163,7 +187,11 @@ namespace Viewer
             _projectionSelector = new ComboBox();
             _projectionSelector.Location = new Point(10, 40 + +_menuStrip.Height);
             _projectionSelector.DropDownStyle = ComboBoxStyle.DropDownList;
-            _projectionSelector.Items.AddRange(new object[] { "Ортогональная", "Перспективная" });
+            _projectionSelector.Items.AddRange(new object[]
+            { 
+                _localizer.GetString("Orthogonal"), 
+                _localizer.GetString("Perspective")
+            });
             _projectionSelector.SelectedIndex = 1;
             _projectionSelector.SelectedIndexChanged += OnProjectionSelected;
             Controls.Add(_projectionSelector);
@@ -176,7 +204,11 @@ namespace Viewer
                 Location = new Point(10, 70 + _menuStrip.Height),
                 DropDownStyle = ComboBoxStyle.DropDownList
             };
-            _drawStrategySelector.Items.AddRange(new object[] { "Без граней", "С гранями" });
+            _drawStrategySelector.Items.AddRange(new object[]
+            {
+                _localizer.GetString("WithoutFaces"),
+                _localizer.GetString("WithFaces")
+            });
             _drawStrategySelector.SelectedIndex = 0;
             _drawStrategySelector.SelectedIndexChanged += OnDrawStrategySelected;
             Controls.Add(_drawStrategySelector);
@@ -267,7 +299,8 @@ namespace Viewer
         private void OnStartStopClicked(object sender, EventArgs e)
         {
             _viewModel.ToggleAutoScroll();
-            _startStopButton.Text = _viewModel.IsAutoScrolling ? "Stop" : "Start";
+            _startStopButton.Text = _viewModel.IsAutoScrolling ?
+                _localizer.GetString("Stop") : _localizer.GetString("Start");
 
             if (_viewModel.IsAutoScrolling)
                 _autoScrollTimer.Start();
@@ -288,6 +321,7 @@ namespace Viewer
 
         private void OnZoomInClicked(object sender, EventArgs e)
         {
+            _localizer.SetCulture("ru-RU");
             _viewModel.ZoomIn();
             Invalidate();
         }
@@ -367,5 +401,25 @@ namespace Viewer
             _colorSliderManager.InitializeSliders(isTesseract, hasFaces);
         }
 
+        private void UpdateLocalizedText()
+        {
+            _fileMenuItem.Text = _localizer.GetString("Options");
+            _languageMenuItem.Text = _localizer.GetString("Language");
+            _toggleSpeedMenuItem.Text = _localizer.GetString("SpeedInDegrees");
+            _startStopButton.Text = _viewModel.IsAutoScrolling
+                ? _localizer.GetString("Stop")
+                : _localizer.GetString("Start");
+
+            _shapeSelector.Items[0] = _localizer.GetString("Tesseract");
+            _shapeSelector.Items[1] = _localizer.GetString("Pyramid");
+            _shapeSelector.Items[2] = _localizer.GetString("Octahedron");
+            _shapeSelector.Items[3] = _localizer.GetString("Cube");
+
+            _projectionSelector.Items[0] = _localizer.GetString("Orthogonal");
+            _projectionSelector.Items[1] = _localizer.GetString("Perspective");
+
+            _drawStrategySelector.Items[0] = _localizer.GetString("WithoutFaces");
+            _drawStrategySelector.Items[1] = _localizer.GetString("WithFaces");
+        }
     }
 }

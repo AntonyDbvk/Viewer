@@ -4,11 +4,16 @@ using Viewer.Model.Shapes;
 using Viewer.Render;
 using Viewer.Model;
 using Viewer.Render.RotationSpeedStrategy;
+using System.Resources;
+using System.Globalization;
+using System.Threading;
+using Viewer.Resources.Localization;
 
 namespace Viewer.ViewModel
 {
     public class ViewerViewModel
     {
+        private Localizer _localizer;
         private readonly Camera _camera;
         private readonly Renderer _renderer;
         private Shape3D[] _shapes;
@@ -25,8 +30,12 @@ namespace Viewer.ViewModel
         private DrawStrategyType _currentDrawStrategy = DrawStrategyType.WithoutFaces;
 
 
+
         public ViewerViewModel()
         {
+            _localizer = Localizer.Instance("Viewer.Resources.Localization.FormElementNamesService", typeof(ViewerViewModel).Assembly);
+            _localizer.SetCulture("en-EN");
+
             _camera = new Camera(DefaultCameraZoom);
             _renderer = new Renderer();
             _rotationSpeedStrategy = new SimpleRotationSpeedStrategy();

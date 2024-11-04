@@ -2,18 +2,21 @@
 using System.Drawing;
 using System.Windows.Forms;
 using Viewer.Render;
+using Viewer.Resources.Localization;
 
 namespace Viewer.UIComponents
 {
     public class ColorSliderManager
     {
         private readonly Form _form;
+        private readonly Localizer _localizer;
         private readonly List<ColorSliderGroup> _edgeSliderGroups;
         private readonly List<ColorSliderGroup> _faceSliderGroups;
 
         public ColorSliderManager(Form form)
         {
             _form = form;
+            _localizer = Localizer.Instance();
             _edgeSliderGroups = new List<ColorSliderGroup>();
             _faceSliderGroups = new List<ColorSliderGroup>();
             _form.Resize += (s, e) => RepositionSliders();
@@ -24,8 +27,8 @@ namespace Viewer.UIComponents
             ClearSliders();
             var (withoutAlpha, withAlpha) = GetSliderGroupCounts(isTesseract, hasFaces);
 
-            CreateSliderGroups(_edgeSliderGroups, withoutAlpha, false, "Цвет для рёбер");
-            CreateSliderGroups(_faceSliderGroups, withAlpha, true, "Цвет для граней");
+            CreateSliderGroups(_edgeSliderGroups, withoutAlpha, false, _localizer.GetString("EdgeColor"));
+            CreateSliderGroups(_faceSliderGroups, withAlpha, true, _localizer.GetString("FaceColor"));
 
             RepositionSliders();
         }
@@ -34,7 +37,7 @@ namespace Viewer.UIComponents
         {
             for (int i = 0; i < count; i++)
             {
-                var sliderGroup = new ColorSliderGroup(includeAlpha, $"{labelBaseText} {i + 1}");
+                var sliderGroup = new ColorSliderGroup(includeAlpha, $"{labelBaseText} {i + 1}",_localizer.GetString("Color") );
                 sliderGroup.AddToForm(_form);
                 sliderGroups.Add(sliderGroup);
                 sliderGroup.ColorChanged += OnSliderColorChanged;

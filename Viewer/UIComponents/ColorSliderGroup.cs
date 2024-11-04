@@ -20,7 +20,7 @@ namespace Viewer.UIComponents
 
         public event EventHandler<Color> ColorChanged;
 
-        public ColorSliderGroup(bool includeAlpha, string labelText)
+        public ColorSliderGroup(bool includeAlpha, string labelText,string buttonText)
         {
             RedSlider = CreateSlider();
             GreenSlider = CreateSlider();
@@ -29,7 +29,7 @@ namespace Viewer.UIComponents
             RedLabel = CreateColorLabel("R");
             GreenLabel = CreateColorLabel("G");
             BlueLabel = CreateColorLabel("B");
-            ColorDialogButton = new Button { Text = "Цвет" };
+            ColorDialogButton = new Button { Text = buttonText  };
             _colorDialog = new ColorDialog();
             if (includeAlpha)
             {
