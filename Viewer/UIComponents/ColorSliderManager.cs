@@ -9,17 +9,21 @@ namespace Viewer.UIComponents
     public class ColorSliderManager
     {
         private readonly Form _form;
+        private readonly Panel _panel;
+        private readonly Panel _drawPanel;
         private readonly Localizer _localizer;
         private readonly List<ColorSliderGroup> _edgeSliderGroups;
         private readonly List<ColorSliderGroup> _faceSliderGroups;
 
-        public ColorSliderManager(Form form)
+        public ColorSliderManager(Form form, Panel panel, Panel drawPanel)
         {
             _form = form;
             _localizer = Localizer.Instance();
             _edgeSliderGroups = new List<ColorSliderGroup>();
             _faceSliderGroups = new List<ColorSliderGroup>();
             _form.Resize += (s, e) => RepositionSliders();
+            _panel = panel;
+            _drawPanel = drawPanel;
         }
 
         public void InitializeSliders(bool isTesseract, bool hasFaces)
@@ -38,7 +42,7 @@ namespace Viewer.UIComponents
             for (int i = 0; i < count; i++)
             {
                 var sliderGroup = new ColorSliderGroup(includeAlpha, $"{labelBaseText} {i + 1}",_localizer.GetString("Color") );
-                sliderGroup.AddToForm(_form);
+                sliderGroup.AddToForm(_panel);
                 sliderGroups.Add(sliderGroup);
                 sliderGroup.ColorChanged += OnSliderColorChanged;
             }
@@ -55,7 +59,7 @@ namespace Viewer.UIComponents
         {
             foreach (var group in sliderGroups)
             {
-                group.Remove(_form);
+                group.Remove(_panel);
             }
             sliderGroups.Clear();
         }
@@ -85,13 +89,14 @@ namespace Viewer.UIComponents
                     DrawingSettings.Instance.FaceBrush2 = new SolidBrush(color);
             }
 
-            _form.Invalidate();
+            _panel.Invalidate();
+            _drawPanel.Invalidate();
         }
 
         private void RepositionSliders()
         {
-            int edgeXOffset = _form.ClientSize.Width - 130; // правый край для рёбер
-            int faceXOffset = _form.ClientSize.Width - 310; // левее для граней
+            int edgeXOffset = _panel.ClientSize.Width - 130; // правый край для рёбер
+            int faceXOffset = _panel.ClientSize.Width - 310; // левее для граней
             int initialY = 40;
             int groupSpacing = 280;
             Color color = Color.BlueViolet;

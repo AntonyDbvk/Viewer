@@ -27,23 +27,21 @@ namespace Viewer
         private ToolStripMenuItem _toggleSpeedMenuItem;
         private ToolStripMenuItem _languageMenuItem;
         private ToolStripMenuItem _fileMenuItem;
+        private BufferedPanel _drawPanel;
 
 
         public Form1()
         {
+
             InitializeComponent();
+            InitDrawPanel();
             DoubleBuffered = true;
-            Paint += OnPaint;
-            MouseDown += OnMouseDown;
-            MouseMove += OnMouseMove;
-            MouseUp += OnMouseUp;
-            MouseWheel += OnMouseWheel;
-            Resize += OnResize;
             _viewModel = new ViewerViewModel();
-            _colorSliderManager = new ColorSliderManager(this);
+            _colorSliderManager = new ColorSliderManager(this, _rightPanel, _drawPanel);
             _localizer = Localizer.Instance();
-            _localizer.CultureChanged += UpdateLocalizedText;
             InitUi();
+            AddBaseEvents();
+
         }
 
         //-----------------ИНИЦИАЛИЗАЦИЯ_UI-----------------
@@ -53,9 +51,9 @@ namespace Viewer
             InitMenu();
             InitShapeSelector();
             InitProjectionSelector();
+            InitDrawStrategySelector();
             InitZoomButtons();
             InitAutoScrollControls();
-            InitDrawStrategySelector();
             UpdateSlidersBasedOnSelection();
         }
 
@@ -68,10 +66,20 @@ namespace Viewer
             PositionAutoScrollControls();
         }
 
+        private void InitDrawPanel()
+        {
+            _drawPanel = new BufferedPanel()
+            {
+                Dock = DockStyle.Fill
+            };
+
+            _tableLayoutPanel.Controls.Add(_drawPanel, 1, 0);
+        }
+
         private void InitMenu()
         {
             _menuStrip = new MenuStrip();
-             _fileMenuItem = new ToolStripMenuItem(_localizer.GetString("Options"));
+            _fileMenuItem = new ToolStripMenuItem(_localizer.GetString("Options"));
 
             _toggleSpeedMenuItem = new ToolStripMenuItem(_localizer.GetString("SpeedInDegrees"), null, (s, e) =>
             {
@@ -83,7 +91,7 @@ namespace Viewer
                 Checked = false
             };
 
-             _languageMenuItem = new ToolStripMenuItem(_localizer.GetString("Language"));
+            _languageMenuItem = new ToolStripMenuItem(_localizer.GetString("Language"));
             var russianMenuItem = new ToolStripMenuItem("Русский", null, (s, e) => ChangeLanguage("ru-RU"));
             var englishMenuItem = new ToolStripMenuItem("English", null, (s, e) => ChangeLanguage("en-US"));
 
@@ -98,8 +106,8 @@ namespace Viewer
 
         private void ChangeLanguage(string cultureCode)
         {
-            _localizer.SetCulture(cultureCode); 
-            UpdateLocalizedText(); 
+            _localizer.SetCulture(cultureCode);
+            UpdateLocalizedText();
         }
 
 
@@ -118,7 +126,7 @@ namespace Viewer
                     Size = new Size(200, 45),
                 };
                 _speedSlider.Scroll += OnSpeedSliderScroll;
-                Controls.Add(_speedSlider);
+                _autoScrollPanel.Controls.Add(_speedSlider);
                 _speedSlider.Anchor = AnchorStyles.Bottom;
             }
             else
@@ -136,10 +144,11 @@ namespace Viewer
         {
             _startStopButton = new Button
             {
-                Size = new Size(60, 30)
+                Size = new Size(60, 30),
+                Text = _localizer.GetString("Start")
             };
             _startStopButton.Click += OnStartStopClicked;
-            Controls.Add(_startStopButton);
+            _autoScrollPanel.Controls.Add(_startStopButton);
             _startStopButton.Anchor = AnchorStyles.Bottom;
         }
 
@@ -152,7 +161,7 @@ namespace Viewer
             };
             _speedTextBox.KeyDown += OnSpeedTextBoxKeyDown;
             _speedTextBox.TextChanged += OnSpeedTextChanged;
-            Controls.Add(_speedTextBox);
+            _autoScrollPanel.Controls.Add(_speedTextBox);
             _speedTextBox.Anchor = AnchorStyles.Bottom;
         }
 
@@ -168,7 +177,7 @@ namespace Viewer
         private void InitShapeSelector()
         {
             _shapeSelector = new ComboBox();
-            _shapeSelector.Location = new Point(10, 10 + _menuStrip.Height);
+            _shapeSelector.Location = new Point(10, 0);
             _shapeSelector.DropDownStyle = ComboBoxStyle.DropDownList;
             _shapeSelector.Items.AddRange(new object[]
             {
@@ -179,29 +188,29 @@ namespace Viewer
             });
             _shapeSelector.SelectedIndex = 0;
             _shapeSelector.SelectedIndexChanged += OnShapeSelected;
-            Controls.Add(_shapeSelector);
+            _leftPanel.Controls.Add(_shapeSelector);
         }
 
         private void InitProjectionSelector()
         {
             _projectionSelector = new ComboBox();
-            _projectionSelector.Location = new Point(10, 40 + +_menuStrip.Height);
+            _projectionSelector.Location = new Point(10, 30);
             _projectionSelector.DropDownStyle = ComboBoxStyle.DropDownList;
             _projectionSelector.Items.AddRange(new object[]
-            { 
-                _localizer.GetString("Orthogonal"), 
+            {
+                _localizer.GetString("Orthogonal"),
                 _localizer.GetString("Perspective")
             });
             _projectionSelector.SelectedIndex = 1;
             _projectionSelector.SelectedIndexChanged += OnProjectionSelected;
-            Controls.Add(_projectionSelector);
+            _leftPanel.Controls.Add(_projectionSelector);
         }
 
         private void InitDrawStrategySelector()
         {
             _drawStrategySelector = new ComboBox
             {
-                Location = new Point(10, 70 + _menuStrip.Height),
+                Location = new Point(10, 60),
                 DropDownStyle = ComboBoxStyle.DropDownList
             };
             _drawStrategySelector.Items.AddRange(new object[]
@@ -211,7 +220,7 @@ namespace Viewer
             });
             _drawStrategySelector.SelectedIndex = 0;
             _drawStrategySelector.SelectedIndexChanged += OnDrawStrategySelected;
-            Controls.Add(_drawStrategySelector);
+            _leftPanel.Controls.Add(_drawStrategySelector);
         }
 
         private void InitZoomButtons()
@@ -226,34 +235,19 @@ namespace Viewer
             _zoomOutButton.Size = new Size(40, 40);
             _zoomOutButton.Click += OnZoomOutClicked;
 
-            Controls.Add(_zoomInButton);
-            Controls.Add(_zoomOutButton);
+            _buttonPanel.Controls.Add(_zoomInButton);
+            _buttonPanel.Controls.Add(_zoomOutButton);
 
             int margin = 10;
 
-            _zoomInButton.Location = new Point(ClientSize.Width - _zoomInButton.Width - margin,
-                                              ClientSize.Height - _zoomInButton.Height - margin);
+            _zoomInButton.Location = new Point(_buttonPanel.Width - _zoomInButton.Width - margin,
+                _buttonPanel.Height - _zoomInButton.Height - margin);
             _zoomOutButton.Location = new Point(_zoomInButton.Left - _zoomOutButton.Width - margin,
-                                               ClientSize.Height - _zoomOutButton.Height - margin);
+                _buttonPanel.Height - _zoomOutButton.Height - margin);
 
             // привязка кнопок к нижнему правому краю
             _zoomInButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             _zoomOutButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-        }
-        //центрирование кнопки и TextBox
-        private void PositionAutoScrollControls()
-        {
-            int margin = 10;
-            int buttonWidth = _startStopButton.Width;
-            int textBoxWidth = _speedTextBox.Width;
-            int sliderWidth = _speedSlider.Width;
-
-            int centerX = (ClientSize.Width - buttonWidth) / 2;
-            _startStopButton.Location = new Point(centerX, ClientSize.Height - _startStopButton.Height - margin);
-
-            _speedTextBox.Location = new Point(_startStopButton.Left - textBoxWidth - margin, _startStopButton.Top);
-
-            _speedSlider.Location = new Point(centerX - (sliderWidth / 2), _startStopButton.Top - _speedSlider.Height - margin);
         }
 
         //-----------------ОБРАБОТЧИКИ_СОБЫТИЙ-----------------
@@ -311,39 +305,38 @@ namespace Viewer
         private void OnAutoScrollTick(object sender, EventArgs e)
         {
             _viewModel.RotateAutomatically();
-            Invalidate();
+            _drawPanel.Invalidate();
         }
 
         private void OnResize(object sender, EventArgs e)
         {
-            Invalidate(); // Перерисовка в соответствии с размерами окна 
+            _drawPanel.Invalidate();
         }
 
         private void OnZoomInClicked(object sender, EventArgs e)
         {
-            _localizer.SetCulture("ru-RU");
             _viewModel.ZoomIn();
-            Invalidate();
+            _drawPanel.Invalidate();
         }
 
         private void OnZoomOutClicked(object sender, EventArgs e)
         {
             _viewModel.ZoomOut();
-            Invalidate();
+            _drawPanel.Invalidate();
         }
 
         private void OnShapeSelected(object sender, EventArgs e)
         {
             _viewModel.ChangeShape(_shapeSelector.SelectedIndex);  // изменяем текущую фигуру в ViewModel
             UpdateSlidersBasedOnSelection();
-            Invalidate();  // обновляем отображение
+            _drawPanel.Invalidate();  // обновляем отображение
 
         }
 
         private void OnPaint(object sender, PaintEventArgs e)
         {
             e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias; // сглаживание при отрисовке
-            _viewModel.Draw(e.Graphics, ClientSize);
+            _viewModel.Draw(e.Graphics, _drawPanel.Size);
         }
 
         // начало движения мыши
@@ -357,7 +350,7 @@ namespace Viewer
         {
             float delta = e.Delta > 0 ? -0.1f : 0.1f; // Уменьшаем или увеличиваем расстояние
             _viewModel.Zoom(delta); // Вызываем метод для изменения расстояния камеры
-            Invalidate(); // Перерисовываем
+            _drawPanel.Invalidate(); // Перерисовываем
         }
 
 
@@ -368,7 +361,7 @@ namespace Viewer
             Point currentPosition = e.Location;
             _viewModel.UpdateCameraRotation(currentPosition.X - _startPosition.X, currentPosition.Y - _startPosition.Y);
             _startPosition = currentPosition;
-            Invalidate();
+            _drawPanel.Invalidate();
         }
 
         private void OnMouseUp(object sender, MouseEventArgs e)
@@ -379,7 +372,7 @@ namespace Viewer
         private void OnProjectionSelected(object sender, EventArgs e)
         {
             _viewModel.IsOrthogonal = _projectionSelector.SelectedIndex == 0;
-            Invalidate();
+            _drawPanel.Invalidate();
         }
 
         private void OnDrawStrategySelected(object sender, EventArgs e)
@@ -387,12 +380,27 @@ namespace Viewer
             _viewModel.ChangeDrawStrategy(_drawStrategySelector.SelectedIndex);
 
             UpdateSlidersBasedOnSelection();
-            Invalidate();
+            _drawPanel.Invalidate();
         }
 
 
         //-----------------ПРОЧИЕ_МЕТОДЫ-----------------
 
+
+        private void PositionAutoScrollControls()
+        {
+            int margin = 10;
+            int buttonWidth = _startStopButton.Width;
+            int textBoxWidth = _speedTextBox.Width;
+            int sliderWidth = _speedSlider.Width;
+
+            int centerX = (_autoScrollPanel.ClientSize.Width - buttonWidth) / 2;
+            _startStopButton.Location = new Point(centerX, _autoScrollPanel.ClientSize.Height - _startStopButton.Height - margin);
+
+            _speedTextBox.Location = new Point(_startStopButton.Left - textBoxWidth - margin, _startStopButton.Top);
+
+            _speedSlider.Location = new Point(centerX - (sliderWidth / 2), _startStopButton.Top - _speedSlider.Height);
+        }
 
         private void UpdateSlidersBasedOnSelection()
         {
@@ -420,6 +428,27 @@ namespace Viewer
 
             _drawStrategySelector.Items[0] = _localizer.GetString("WithoutFaces");
             _drawStrategySelector.Items[1] = _localizer.GetString("WithFaces");
+        }
+
+        private void AddBaseEvents()
+        {
+            _drawPanel.Paint += OnPaint;
+            MouseWheel += OnMouseWheel;
+            Resize += OnResize;
+            _localizer.CultureChanged += UpdateLocalizedText;
+
+            AddMouseEvents();
+
+        }
+
+        private void AddMouseEvents()
+        {
+            foreach (Control control in _tableLayoutPanel.Controls)
+            {
+                control.MouseDown += OnMouseDown;
+                control.MouseMove += OnMouseMove;
+                control.MouseUp += OnMouseUp;
+            }
         }
     }
 }

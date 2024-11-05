@@ -1,5 +1,4 @@
 ﻿using System.Drawing;
-using Viewer.Model;
 using Viewer.Model.Shapes;
 
 namespace Viewer.Render.DrawStrategy.Base

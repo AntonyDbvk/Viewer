@@ -1,7 +1,4 @@
-﻿using System;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using Viewer.Model;
+﻿using System.Drawing;
 using Viewer.Model.Geometry;
 using Viewer.Model.Shapes;
 using Viewer.Render.DrawStrategy.Base;

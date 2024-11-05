@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
-using System.Linq;
+﻿using System.Drawing;
 using Viewer.Model.Geometry;
 using Viewer.Model.Geometry.Viewer.Model.Geometry;
-using Viewer.Model.Shapes;
 
 namespace Viewer.Render.DrawStrategy.Base
 {

@@ -137,7 +137,7 @@ namespace Viewer.UIComponents
             else ColorDialogButton.Location = new Point(location.X, location.Y + spacing * 4);
         }
 
-        public void Remove(Form form)
+        public void Remove(Control form)
         {
             form.Controls.Remove(RedSlider);
             form.Controls.Remove(GreenSlider);

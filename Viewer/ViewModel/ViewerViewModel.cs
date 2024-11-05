@@ -1,12 +1,7 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using Viewer.Model.Shapes;
 using Viewer.Render;
-using Viewer.Model;
 using Viewer.Render.RotationSpeedStrategy;
-using System.Resources;
-using System.Globalization;
-using System.Threading;
 using Viewer.Resources.Localization;
 
 namespace Viewer.ViewModel

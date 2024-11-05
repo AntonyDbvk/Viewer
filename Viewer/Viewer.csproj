@@ -137,9 +137,15 @@
       <DependentUpon>FormElementNamesService.resx</DependentUpon>
     </Compile>
     <Compile Include="Resources\Localization\Localizer.cs" />
+    <Compile Include="UIComponents\BufferedPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UIComponents\ColorSliderGroup.cs" />
     <Compile Include="UIComponents\ColorSliderManager.cs" />
     <Compile Include="ViewModel\ViewerViewModel.cs" />
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
