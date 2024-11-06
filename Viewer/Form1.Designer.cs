@@ -28,22 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this._rightPanel = new System.Windows.Forms.Panel();
             this._tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this._leftPanel = new System.Windows.Forms.TableLayoutPanel();
             this._autoScrollPanel = new System.Windows.Forms.TableLayoutPanel();
             this._buttonPanel = new System.Windows.Forms.TableLayoutPanel();
+            this._rightPanel = new System.Windows.Forms.TableLayoutPanel();
             this._tableLayoutPanel.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // _rightPanel
-            // 
-            this._rightPanel.BackColor = System.Drawing.SystemColors.Control;
-            this._rightPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this._rightPanel.Location = new System.Drawing.Point(949, 3);
-            this._rightPanel.Name = "_rightPanel";
-            this._rightPanel.Size = new System.Drawing.Size(310, 634);
-            this._rightPanel.TabIndex = 1;
             // 
             // _tableLayoutPanel
             // 
@@ -51,10 +42,10 @@
             this._tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this._tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this._tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this._tableLayoutPanel.Controls.Add(this._rightPanel, 2, 0);
             this._tableLayoutPanel.Controls.Add(this._leftPanel, 0, 0);
             this._tableLayoutPanel.Controls.Add(this._autoScrollPanel, 1, 1);
             this._tableLayoutPanel.Controls.Add(this._buttonPanel, 2, 1);
+            this._tableLayoutPanel.Controls.Add(this._rightPanel, 2, 0);
             this._tableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this._tableLayoutPanel.Location = new System.Drawing.Point(0, 0);
             this._tableLayoutPanel.Name = "_tableLayoutPanel";
@@ -106,6 +97,34 @@
             this._buttonPanel.Size = new System.Drawing.Size(144, 64);
             this._buttonPanel.TabIndex = 6;
             // 
+            // _rightPanel
+            // 
+            this._rightPanel.ColumnCount = 4;
+            this._rightPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this._rightPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this._rightPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this._rightPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this._rightPanel.Dock = System.Windows.Forms.DockStyle.Top;
+            this._rightPanel.Location = new System.Drawing.Point(949, 3);
+            this._rightPanel.Name = "_rightPanel";
+            this._rightPanel.RowCount = 14;
+            this._rightPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this._rightPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this._rightPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this._rightPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this._rightPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this._rightPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this._rightPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this._rightPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this._rightPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this._rightPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this._rightPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this._rightPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this._rightPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this._rightPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this._rightPanel.Size = new System.Drawing.Size(310, 565);
+            this._rightPanel.TabIndex = 7;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -122,11 +141,11 @@
         }
 
         #endregion
-        private System.Windows.Forms.Panel _rightPanel;
         private System.Windows.Forms.TableLayoutPanel _tableLayoutPanel;
         private System.Windows.Forms.TableLayoutPanel _leftPanel;
         private System.Windows.Forms.TableLayoutPanel _autoScrollPanel;
         private System.Windows.Forms.TableLayoutPanel _buttonPanel;
+        private System.Windows.Forms.TableLayoutPanel _rightPanel;
     }
 }
 

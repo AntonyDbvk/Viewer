@@ -9,13 +9,13 @@ namespace Viewer.UIComponents
     public class ColorSliderManager
     {
         private readonly Form _form;
-        private readonly Panel _panel;
+        private readonly TableLayoutPanel _panel;
         private readonly Panel _drawPanel;
         private readonly Localizer _localizer;
         private readonly List<ColorSliderGroup> _edgeSliderGroups;
         private readonly List<ColorSliderGroup> _faceSliderGroups;
 
-        public ColorSliderManager(Form form, Panel panel, Panel drawPanel)
+        public ColorSliderManager(Form form, TableLayoutPanel panel, Panel drawPanel)
         {
             _form = form;
             _localizer = Localizer.Instance();
@@ -69,7 +69,7 @@ namespace Viewer.UIComponents
             for (int i = 0; i < count; i++)
             {
                 var sliderGroup = new ColorSliderGroup(includeAlpha, $"{labelBaseText} {i + 1}",_localizer.GetString("Color") );
-                sliderGroup.AddToForm(_panel);
+                sliderGroup.AddToForm(_panel,includeAlpha,i);
                 sliderGroups.Add(sliderGroup);
                 sliderGroup.ColorChanged += OnSliderColorChanged;
             }
@@ -127,18 +127,6 @@ namespace Viewer.UIComponents
             int initialY = 40;
             int groupSpacing = 280;
             Color color = Color.BlueViolet;
-
-            PositionSliderGroup(edgeXOffset, initialY, groupSpacing, _edgeSliderGroups);
-            PositionSliderGroup(faceXOffset, initialY, groupSpacing, _faceSliderGroups);
-        }
-
-        private void PositionSliderGroup(int xOffset, int initialY, int groupSpacing, List<ColorSliderGroup> sliderGroups)
-        {
-            for (int i = 0; i < sliderGroups.Count; i++)
-            {
-                Point position = new Point(xOffset, initialY + i * groupSpacing);
-                sliderGroups[i].PositionSliders(position);
-            }
         }
     }
 }

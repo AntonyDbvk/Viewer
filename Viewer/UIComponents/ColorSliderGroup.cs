@@ -33,10 +33,9 @@ namespace Viewer.UIComponents
             BlueLabel = CreateColorLabel("B");
             ColorDialogButton = new Button { Text = buttonText };
             _colorDialog = new ColorDialog();
-            ColorPreviewPanel = new Panel 
+            ColorPreviewPanel = new Panel
             {
-                Size = new Size(25, 25), 
-                BackColor = Color.Black, 
+                BackColor = Color.Black,
                 BorderStyle = BorderStyle.FixedSingle
             };
             if (includeAlpha)
@@ -58,6 +57,7 @@ namespace Viewer.UIComponents
                 TickFrequency = 5,
                 SmallChange = 1,
                 LargeChange = 10,
+                Dock = DockStyle.Fill
             };
         }
 
@@ -104,50 +104,32 @@ namespace Viewer.UIComponents
             ColorChanged?.Invoke(this, color);
         }
 
-        public void AddToForm(Control parent)
+        public void AddToForm(TableLayoutPanel parent, bool includeAlpha, int index)
         {
-            parent.Controls.Add(GroupLabel);
-            parent.Controls.Add(RedSlider);
-            parent.Controls.Add(GreenSlider);
-            parent.Controls.Add(BlueSlider);
-            parent.Controls.Add(RedLabel);
-            parent.Controls.Add(GreenLabel);
-            parent.Controls.Add(BlueLabel);
-            parent.Controls.Add(ColorPreviewPanel);
-            if (AlphaSlider != null)
-            {
-                parent.Controls.Add(AlphaSlider);
-                parent.Controls.Add(AlphaLabel);
-            }
-            parent.Controls.Add(ColorDialogButton);
-        }
+            int baseColumn = includeAlpha ? 0 : 2;
+            int baseRow = index * 7;
 
-        public void PositionSliders(Point location)
-        {
-            const int spacing = 50;
-            const int labelOffset = -20;
-            GroupLabel.Location = location;
+            parent.Controls.Add(GroupLabel, baseColumn + 1, baseRow);
 
-            RedLabel.Location = new Point(location.X + labelOffset, location.Y + spacing);
-            RedSlider.Location = new Point(location.X, location.Y + spacing);
-
-            GreenLabel.Location = new Point(location.X + labelOffset, location.Y + spacing * 2);
-            GreenSlider.Location = new Point(location.X, location.Y + spacing * 2);
-
-            BlueLabel.Location = new Point(location.X + labelOffset, location.Y + spacing * 3);
-            BlueSlider.Location = new Point(location.X, location.Y + spacing * 3);
+            AddSliderWithLabel(parent, RedLabel, RedSlider, baseColumn, baseRow + 1);
+            AddSliderWithLabel(parent, GreenLabel, GreenSlider, baseColumn, baseRow + 2);
+            AddSliderWithLabel(parent, BlueLabel, BlueSlider, baseColumn, baseRow + 3);
 
             if (AlphaSlider != null)
             {
-                AlphaLabel.Location = new Point(location.X + labelOffset, location.Y + spacing * 4);
-                AlphaSlider.Location = new Point(location.X, location.Y + spacing * 4);
-                ColorDialogButton.Location = new Point(location.X, location.Y + spacing * 5);
+                AddSliderWithLabel(parent, AlphaLabel, AlphaSlider, baseColumn, baseRow + 4);
             }
-            else ColorDialogButton.Location = new Point(location.X, location.Y + spacing * 4);
 
-            ColorPreviewPanel.Location = new Point(ColorDialogButton.Left + ColorDialogButton.Width + 5, ColorDialogButton.Top);
-
+            parent.Controls.Add(ColorDialogButton, baseColumn + 1, baseRow + 5);
+            parent.Controls.Add(ColorPreviewPanel, baseColumn + 1, baseRow + 6);
         }
+
+        private void AddSliderWithLabel(TableLayoutPanel parent, Label label, TrackBar slider, int column, int row)
+        {
+            parent.Controls.Add(label, column, row);
+            parent.Controls.Add(slider, column + 1, row);
+        }
+
 
         public void Remove(Control form)
         {
