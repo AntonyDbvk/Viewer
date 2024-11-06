@@ -129,7 +129,8 @@ namespace Viewer
                     Size = new Size(200, 45),
                 };
                 _speedSlider.Scroll += OnSpeedSliderScroll;
-                _autoScrollPanel.Controls.Add(_speedSlider);
+                _autoScrollPanel.Controls.Add(_speedSlider,0,0);
+                _autoScrollPanel.SetColumnSpan(_speedSlider, 2);
                 _speedSlider.Anchor = AnchorStyles.Bottom;
             }
             else
@@ -151,8 +152,8 @@ namespace Viewer
                 Text = _localizer.GetString("Start")
             };
             _startStopButton.Click += OnStartStopClicked;
-            _autoScrollPanel.Controls.Add(_startStopButton);
-            _startStopButton.Anchor = AnchorStyles.Bottom;
+            _startStopButton.Anchor = AnchorStyles.Right | AnchorStyles.Bottom;
+            _autoScrollPanel.Controls.Add(_startStopButton,0,1);
         }
 
         private void InitSpeedTextBox()
@@ -164,8 +165,8 @@ namespace Viewer
             };
             _speedTextBox.KeyDown += OnSpeedTextBoxKeyDown;
             _speedTextBox.TextChanged += OnSpeedTextChanged;
-            _autoScrollPanel.Controls.Add(_speedTextBox);
-            _speedTextBox.Anchor = AnchorStyles.Bottom;
+            _speedTextBox.Anchor = AnchorStyles.Left | AnchorStyles.Bottom;
+            _autoScrollPanel.Controls.Add(_speedTextBox,1,1);
         }
 
         private void InitAutoScrollTimer()
@@ -191,7 +192,7 @@ namespace Viewer
             });
             _shapeSelector.SelectedIndex = 0;
             _shapeSelector.SelectedIndexChanged += OnShapeSelected;
-            _leftPanel.Controls.Add(_shapeSelector);
+            _leftPanel.Controls.Add(_shapeSelector,0,0);
         }
 
         private void InitProjectionSelector()
@@ -206,7 +207,7 @@ namespace Viewer
             });
             _projectionSelector.SelectedIndex = 1;
             _projectionSelector.SelectedIndexChanged += OnProjectionSelected;
-            _leftPanel.Controls.Add(_projectionSelector);
+            _leftPanel.Controls.Add(_projectionSelector,0,1);
         }
 
         private void InitDrawStrategySelector()
@@ -223,7 +224,7 @@ namespace Viewer
             });
             _drawStrategySelector.SelectedIndex = 0;
             _drawStrategySelector.SelectedIndexChanged += OnDrawStrategySelected;
-            _leftPanel.Controls.Add(_drawStrategySelector);
+            _leftPanel.Controls.Add(_drawStrategySelector,0,2);
         }
 
         private void InitZoomButtons()
@@ -238,19 +239,11 @@ namespace Viewer
             _zoomOutButton.Size = new Size(40, 40);
             _zoomOutButton.Click += OnZoomOutClicked;
 
-            _buttonPanel.Controls.Add(_zoomInButton);
-            _buttonPanel.Controls.Add(_zoomOutButton);
+         
+            _buttonPanel.Controls.Add(_zoomOutButton,0,0);
+            _buttonPanel.Controls.Add(_zoomInButton, 1, 0);
 
-            int margin = 10;
 
-            _zoomInButton.Location = new Point(_buttonPanel.Width - _zoomInButton.Width - margin,
-                _buttonPanel.Height - _zoomInButton.Height - margin);
-            _zoomOutButton.Location = new Point(_zoomInButton.Left - _zoomOutButton.Width - margin,
-                _buttonPanel.Height - _zoomOutButton.Height - margin);
-
-            // привязка кнопок к нижнему правому краю
-            _zoomInButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            _zoomOutButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
         }
 
         //-----------------ОБРАБОТЧИКИ_СОБЫТИЙ-----------------
