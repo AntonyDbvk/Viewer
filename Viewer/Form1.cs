@@ -32,7 +32,6 @@ namespace Viewer
 
         public Form1()
         {
-
             InitializeComponent();
             InitDrawPanel();
             DoubleBuffered = true;
@@ -41,7 +40,6 @@ namespace Viewer
             _localizer = Localizer.Instance();
             InitUi();
             AddBaseEvents();
-
         }
 
         //-----------------ИНИЦИАЛИЗАЦИЯ_UI-----------------

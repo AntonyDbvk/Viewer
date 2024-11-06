@@ -16,11 +16,13 @@ namespace Viewer.UIComponents
         private Label BlueLabel { get; }
         private Label AlphaLabel { get; }
         public Button ColorDialogButton { get; }
+        public Panel ColorPreviewPanel { get; }
         private readonly ColorDialog _colorDialog;
+
 
         public event EventHandler<Color> ColorChanged;
 
-        public ColorSliderGroup(bool includeAlpha, string labelText,string buttonText)
+        public ColorSliderGroup(bool includeAlpha, string labelText, string buttonText)
         {
             RedSlider = CreateSlider();
             GreenSlider = CreateSlider();
@@ -29,8 +31,14 @@ namespace Viewer.UIComponents
             RedLabel = CreateColorLabel("R");
             GreenLabel = CreateColorLabel("G");
             BlueLabel = CreateColorLabel("B");
-            ColorDialogButton = new Button { Text = buttonText  };
+            ColorDialogButton = new Button { Text = buttonText };
             _colorDialog = new ColorDialog();
+            ColorPreviewPanel = new Panel 
+            {
+                Size = new Size(25, 25), 
+                BackColor = Color.Black, 
+                BorderStyle = BorderStyle.FixedSingle
+            };
             if (includeAlpha)
             {
                 AlphaSlider = CreateSlider();
@@ -91,6 +99,8 @@ namespace Viewer.UIComponents
                 ? Color.FromArgb(AlphaSlider.Value, RedSlider.Value, GreenSlider.Value, BlueSlider.Value)
                 : Color.FromArgb(RedSlider.Value, GreenSlider.Value, BlueSlider.Value);
 
+            ColorPreviewPanel.BackColor = color;
+
             ColorChanged?.Invoke(this, color);
         }
 
@@ -103,6 +113,7 @@ namespace Viewer.UIComponents
             parent.Controls.Add(RedLabel);
             parent.Controls.Add(GreenLabel);
             parent.Controls.Add(BlueLabel);
+            parent.Controls.Add(ColorPreviewPanel);
             if (AlphaSlider != null)
             {
                 parent.Controls.Add(AlphaSlider);
@@ -115,7 +126,6 @@ namespace Viewer.UIComponents
         {
             const int spacing = 50;
             const int labelOffset = -20;
-
             GroupLabel.Location = location;
 
             RedLabel.Location = new Point(location.X + labelOffset, location.Y + spacing);
@@ -133,8 +143,10 @@ namespace Viewer.UIComponents
                 AlphaSlider.Location = new Point(location.X, location.Y + spacing * 4);
                 ColorDialogButton.Location = new Point(location.X, location.Y + spacing * 5);
             }
-
             else ColorDialogButton.Location = new Point(location.X, location.Y + spacing * 4);
+
+            ColorPreviewPanel.Location = new Point(ColorDialogButton.Left + ColorDialogButton.Width + 5, ColorDialogButton.Top);
+
         }
 
         public void Remove(Control form)
@@ -149,6 +161,7 @@ namespace Viewer.UIComponents
             form.Controls.Remove(GreenLabel);
             form.Controls.Remove(BlueLabel);
             form.Controls.Remove(ColorDialogButton);
+            form.Controls.Remove(ColorPreviewPanel);
             _colorDialog.Dispose();
             if (AlphaLabel != null) form.Controls.Remove(AlphaLabel);
         }
@@ -158,6 +171,7 @@ namespace Viewer.UIComponents
             RedSlider.Value = color.R;
             GreenSlider.Value = color.G;
             BlueSlider.Value = color.B;
+            ColorPreviewPanel.BackColor = color;
             if (AlphaSlider != null)
                 AlphaSlider.Value = color.A;
         }

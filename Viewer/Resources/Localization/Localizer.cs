@@ -45,7 +45,6 @@ namespace Viewer.Resources.Localization
             CultureInfo culture = new CultureInfo(cultureCode);
             Thread.CurrentThread.CurrentCulture = culture;
             Thread.CurrentThread.CurrentUICulture = culture;
-
             CultureChanged?.Invoke();
         }
 
