@@ -34,5 +34,41 @@ namespace Viewer.Properties {
                 this["CultureLanguage"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int ShapeIndex {
+            get {
+                return ((int)(this["ShapeIndex"]));
+            }
+            set {
+                this["ShapeIndex"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int ProjectionIndex {
+            get {
+                return ((int)(this["ProjectionIndex"]));
+            }
+            set {
+                this["ProjectionIndex"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int DrawStrategyIndex {
+            get {
+                return ((int)(this["DrawStrategyIndex"]));
+            }
+            set {
+                this["DrawStrategyIndex"] = value;
+            }
+        }
     }
 }

@@ -5,5 +5,14 @@
     <Setting Name="CultureLanguage" Type="System.String" Scope="User">
       <Value Profile="(Default)">en-EN</Value>
     </Setting>
+    <Setting Name="ShapeIndex" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="ProjectionIndex" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="DrawStrategyIndex" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

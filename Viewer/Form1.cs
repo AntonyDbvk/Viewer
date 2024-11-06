@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
+using Viewer.Render;
 using Viewer.Resources.Localization;
 using Viewer.UIComponents;
 using Viewer.ViewModel;
@@ -393,6 +394,9 @@ namespace Viewer
         protected override void OnClosing(CancelEventArgs e)
         {
             Properties.Settings.Default.CultureLanguage = Thread.CurrentThread.CurrentCulture.Name;
+            Properties.Settings.Default.ShapeIndex = _shapeSelector.SelectedIndex;
+            Properties.Settings.Default.ProjectionIndex = _projectionSelector.SelectedIndex;
+            Properties.Settings.Default.DrawStrategyIndex = _drawStrategySelector.SelectedIndex;
             Properties.Settings.Default.Save();
         }
 
@@ -468,6 +472,9 @@ namespace Viewer
         private void LoadSettings()
         {
             _localizer.SetCulture(Properties.Settings.Default.CultureLanguage);
+            _shapeSelector.SelectedIndex = Properties.Settings.Default.ShapeIndex;
+            _projectionSelector.SelectedIndex = Properties.Settings.Default.ProjectionIndex;
+            _drawStrategySelector.SelectedIndex = Properties.Settings.Default.DrawStrategyIndex;
         }
     }
 }
