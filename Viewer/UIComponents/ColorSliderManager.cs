@@ -10,12 +10,12 @@ namespace Viewer.UIComponents
     {
         private readonly Form _form;
         private readonly TableLayoutPanel _panel;
-        private readonly Panel _drawPanel;
+        private readonly Control _drawPanel;
         private readonly Localizer _localizer;
         private readonly List<ColorSliderGroup> _edgeSliderGroups;
         private readonly List<ColorSliderGroup> _faceSliderGroups;
 
-        public ColorSliderManager(Form form, TableLayoutPanel panel, Panel drawPanel)
+        public ColorSliderManager(Form form, TableLayoutPanel panel, Control drawPanel)
         {
             _form = form;
             _localizer = Localizer.Instance();

@@ -66,7 +66,6 @@ namespace Viewer
             InitSpeedTextBox();
             InitSpeedSlider();
             InitAutoScrollTimer();
-            PositionAutoScrollControls();
         }
 
         private void InitDrawPanel()
@@ -180,9 +179,12 @@ namespace Viewer
 
         private void InitShapeSelector()
         {
-            _shapeSelector = new ComboBox();
-            _shapeSelector.Location = new Point(10, 0);
-            _shapeSelector.DropDownStyle = ComboBoxStyle.DropDownList;
+            _shapeSelector = new ComboBox
+            {
+                MaximumSize = new Size(200,20),
+                Dock = DockStyle.Fill,
+                DropDownStyle = ComboBoxStyle.DropDownList
+            };
             _shapeSelector.Items.AddRange(new object[]
             {
                 _localizer.GetString("Tesseract"),
@@ -197,8 +199,12 @@ namespace Viewer
 
         private void InitProjectionSelector()
         {
-            _projectionSelector = new ComboBox();
-            _projectionSelector.Location = new Point(10, 30);
+            _projectionSelector = new ComboBox
+            {
+                MaximumSize = new Size(200, 20),
+                Dock = DockStyle.Fill,
+                DropDownStyle = ComboBoxStyle.DropDownList
+            };
             _projectionSelector.DropDownStyle = ComboBoxStyle.DropDownList;
             _projectionSelector.Items.AddRange(new object[]
             {
@@ -214,7 +220,8 @@ namespace Viewer
         {
             _drawStrategySelector = new ComboBox
             {
-                Location = new Point(10, 60),
+                MaximumSize = new Size(200, 20),
+                Dock = DockStyle.Fill,
                 DropDownStyle = ComboBoxStyle.DropDownList
             };
             _drawStrategySelector.Items.AddRange(new object[]
@@ -397,21 +404,7 @@ namespace Viewer
         //-----------------ПРОЧИЕ_МЕТОДЫ-----------------
 
 
-        private void PositionAutoScrollControls()
-        {
-            int margin = 10;
-            int buttonWidth = _startStopButton.Width;
-            int textBoxWidth = _speedTextBox.Width;
-            int sliderWidth = _speedSlider.Width;
-
-            int centerX = (_autoScrollPanel.ClientSize.Width - buttonWidth) / 2;
-            _startStopButton.Location = new Point(centerX,
-                _autoScrollPanel.ClientSize.Height - _startStopButton.Height - margin);
-
-            _speedTextBox.Location = new Point(_startStopButton.Left - textBoxWidth - margin, _startStopButton.Top);
-
-            _speedSlider.Location = new Point(centerX - (sliderWidth / 2), _startStopButton.Top - _speedSlider.Height);
-        }
+ 
 
         private void UpdateSlidersBasedOnSelection()
         {
