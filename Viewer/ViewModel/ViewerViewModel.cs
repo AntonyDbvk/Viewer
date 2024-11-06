@@ -29,8 +29,6 @@ namespace Viewer.ViewModel
         public ViewerViewModel()
         {
             _localizer = Localizer.Instance("Viewer.Resources.Localization.FormElementNamesService", typeof(ViewerViewModel).Assembly);
-            _localizer.SetCulture("en-EN");
-
             _camera = new Camera(DefaultCameraZoom);
             _renderer = new Renderer();
             _rotationSpeedStrategy = new SimpleRotationSpeedStrategy();

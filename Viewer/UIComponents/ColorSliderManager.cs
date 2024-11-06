@@ -34,7 +34,34 @@ namespace Viewer.UIComponents
             CreateSliderGroups(_edgeSliderGroups, withoutAlpha, false, _localizer.GetString("EdgeColor"));
             CreateSliderGroups(_faceSliderGroups, withAlpha, true, _localizer.GetString("FaceColor"));
 
+            SetSliderValuesFromSettings();
             RepositionSliders();
+        }
+
+        private void SetSliderValuesFromSettings()
+        {
+            if (_edgeSliderGroups.Count > 0)
+                SetSliderGroupValues(_edgeSliderGroups[0], DrawingSettings.Instance.EdgePen1.Color);
+
+            if (_edgeSliderGroups.Count > 1)
+                SetSliderGroupValues(_edgeSliderGroups[1], DrawingSettings.Instance.EdgePen2.Color);
+
+            if (_faceSliderGroups.Count > 0)
+                SetSliderGroupValues(_faceSliderGroups[0], ((SolidBrush)DrawingSettings.Instance.FaceBrush1).Color);
+
+            if (_faceSliderGroups.Count > 1)
+                SetSliderGroupValues(_faceSliderGroups[1], ((SolidBrush)DrawingSettings.Instance.FaceBrush2).Color);
+        }
+
+        private void SetSliderGroupValues(ColorSliderGroup sliderGroup, Color color)
+        {
+            sliderGroup.RedSlider.Value = color.R;
+            sliderGroup.GreenSlider.Value = color.G;
+            sliderGroup.BlueSlider.Value = color.B;
+            if (sliderGroup.AlphaSlider != null)
+                sliderGroup.AlphaSlider.Value = color.A;
+
+            sliderGroup.ColorPreviewPanel.BackColor = color;
         }
 
         private void CreateSliderGroups(List<ColorSliderGroup> sliderGroups, int count, bool includeAlpha, string labelBaseText)

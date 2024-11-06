@@ -1,9 +1,13 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Drawing;
+using System.Text.RegularExpressions;
+using System.Threading;
 using System.Windows.Forms;
 using Viewer.Resources.Localization;
 using Viewer.UIComponents;
 using Viewer.ViewModel;
+using Timer = System.Windows.Forms.Timer;
 
 namespace Viewer
 {
@@ -291,8 +295,8 @@ namespace Viewer
         private void OnStartStopClicked(object sender, EventArgs e)
         {
             _viewModel.ToggleAutoScroll();
-            _startStopButton.Text = _viewModel.IsAutoScrolling ?
-                _localizer.GetString("Stop") : _localizer.GetString("Start");
+            _startStopButton.Text =
+                _viewModel.IsAutoScrolling ? _localizer.GetString("Stop") : _localizer.GetString("Start");
 
             if (_viewModel.IsAutoScrolling)
                 _autoScrollTimer.Start();
@@ -325,9 +329,9 @@ namespace Viewer
 
         private void OnShapeSelected(object sender, EventArgs e)
         {
-            _viewModel.ChangeShape(_shapeSelector.SelectedIndex);  // изменяем текущую фигуру в ViewModel
+            _viewModel.ChangeShape(_shapeSelector.SelectedIndex); // изменяем текущую фигуру в ViewModel
             UpdateSlidersBasedOnSelection();
-            _drawPanel.Invalidate();  // обновляем отображение
+            _drawPanel.Invalidate(); // обновляем отображение
 
         }
 
@@ -381,6 +385,17 @@ namespace Viewer
             _drawPanel.Invalidate();
         }
 
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            LoadSettings();
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            Properties.Settings.Default.CultureLanguage = Thread.CurrentThread.CurrentCulture.Name;
+            Properties.Settings.Default.Save();
+        }
+
 
         //-----------------ПРОЧИЕ_МЕТОДЫ-----------------
 
@@ -393,7 +408,8 @@ namespace Viewer
             int sliderWidth = _speedSlider.Width;
 
             int centerX = (_autoScrollPanel.ClientSize.Width - buttonWidth) / 2;
-            _startStopButton.Location = new Point(centerX, _autoScrollPanel.ClientSize.Height - _startStopButton.Height - margin);
+            _startStopButton.Location = new Point(centerX,
+                _autoScrollPanel.ClientSize.Height - _startStopButton.Height - margin);
 
             _speedTextBox.Location = new Point(_startStopButton.Left - textBoxWidth - margin, _startStopButton.Top);
 
@@ -447,6 +463,11 @@ namespace Viewer
                 control.MouseMove += OnMouseMove;
                 control.MouseUp += OnMouseUp;
             }
+        }
+
+        private void LoadSettings()
+        {
+            _localizer.SetCulture(Properties.Settings.Default.CultureLanguage);
         }
     }
 }
