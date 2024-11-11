@@ -39,6 +39,12 @@
     <Reference Include="Microsoft.Extensions.Primitives, Version=8.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.Primitives.8.0.0\lib\net462\Microsoft.Extensions.Primitives.dll</HintPath>
     </Reference>
+    <Reference Include="OpenTK, Version=3.3.3.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
+      <HintPath>..\packages\OpenTK.3.3.3\lib\net20\OpenTK.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTK.GLControl, Version=3.3.3.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
+      <HintPath>..\packages\OpenTK.GLControl.3.3.3\lib\net20\OpenTK.GLControl.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
@@ -76,13 +82,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\Geometry\Face.cs" />
-    <Compile Include="Render\Camera.cs" />
+    <Compile Include="Render\Cameras\CameraBase.cs" />
+    <Compile Include="Render\Cameras\GDICamera.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Render\Cameras\OpenTKCamera.cs" />
     <Compile Include="Render\DrawingSettings.cs" />
     <Compile Include="Render\DrawStrategyType.cs" />
     <Compile Include="Render\DrawStrategy\Base\DrawStrategyBase.cs" />
