@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography;
-using System;
+﻿using System;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
@@ -8,35 +7,51 @@ namespace Viewer.Render.Cameras
     public class OpenTKCamera : CameraBase
     {
         public OpenTKCamera(float initialDistance) : base(initialDistance) { }
+        public OpenTKCamera(CameraBase camera) : base(camera) { }
 
-        public void ApplyTransformations(int width, int height, bool isOrthogonal)
+
+        private float _fieldOfView = 45f;
+        private float _nearClip = 0.1f;
+        private float _farClip = 1000f;
+
+        public Matrix4 GetViewMatrix()
         {
-            SetProjection(width, height, isOrthogonal);
-            GL.MatrixMode(MatrixMode.Modelview);
-            GL.LoadIdentity();
-            GL.Translate(0.0f, 0.0f, -Distance);
-            GL.Rotate(AngleX * (180.0f / (float)Math.PI), 1.0f, 0.0f, 0.0f);
-            GL.Rotate(AngleY * (180.0f / (float)Math.PI), 0.0f, 1.0f, 0.0f);
+            var cameraPosition = new Vector3(
+                -Distance * (float)Math.Cos(AngleX) * (float)Math.Cos(AngleY),
+                -Distance * (float)Math.Sin(AngleX),  
+                Distance * (float)Math.Cos(AngleX) * (float)Math.Sin(AngleY)  
+            );
+
+            var targetPosition = Vector3.Zero;
+
+            var upDirection = Vector3.UnitY;
+
+            return Matrix4.LookAt(cameraPosition, targetPosition, upDirection);
+
+
         }
 
-        private void SetProjection(int width, int height, bool isOrthogonal)
+        public Matrix4 GetProjectionMatrix(float aspectRatio, bool isOrtho)
         {
-            GL.MatrixMode(MatrixMode.Projection);
-            GL.LoadIdentity();
-
-            if (isOrthogonal)
+            if (!isOrtho)
             {
-                float aspectRatio = width / (float)height;
-                GL.Ortho(-aspectRatio * Distance, aspectRatio * Distance, -Distance, Distance, 1.0f, 100.0f);
-            }
-            else
-            {
-                Matrix4 perspective = Matrix4.CreatePerspectiveFieldOfView(
-                    MathHelper.DegreesToRadians(45.0f), width / (float)height, 1.0f, 100.0f);
-                GL.LoadMatrix(ref perspective);
+                return Matrix4.CreatePerspectiveFieldOfView(
+                    MathHelper.DegreesToRadians(_fieldOfView),
+                    aspectRatio,
+                    _nearClip,
+                    _farClip
+                );
             }
 
-            GL.MatrixMode(MatrixMode.Modelview);
+            float orthoSize = Distance / 2f;
+            return Matrix4.CreateOrthographic(
+                orthoSize * aspectRatio,
+                orthoSize,
+                _nearClip,
+                _farClip
+            );
         }
+
+
     }
 }

@@ -9,6 +9,7 @@ namespace Viewer.Render.Cameras
         private const float ScaleFactorPerspective = 100f;
 
         public GDICamera(float initialDistance) : base(initialDistance) { }
+        public GDICamera(CameraBase camera) : base(camera) { }
 
         public PointF Project(float x, float y, float z, Size clientSize, bool isOrthogonal)
         {

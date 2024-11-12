@@ -18,6 +18,13 @@ namespace Viewer.Render.Cameras
             AngleY = 0;
         }
 
+        public  CameraBase(CameraBase camera)
+        {
+            Distance = camera.Distance;
+            AngleX = camera.AngleX;
+            AngleY = camera.AngleY;
+        }
+
         public void Zoom(float delta)
         {
             Distance = Math.Max(MinDistance, Math.Min(MaxDistance, Distance + delta));

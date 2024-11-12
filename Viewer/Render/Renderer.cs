@@ -1,4 +1,6 @@
-﻿using System.Drawing;
+﻿using OpenTK;
+using System.Drawing;
+using OpenTK.Graphics.OpenGL;
 using Viewer.Model.Shapes;
 using Viewer.Render.Cameras;
 using Viewer.Render.DrawStrategy;
@@ -10,6 +12,7 @@ namespace Viewer.Render
     {
         private readonly DrawingSettings _drawingSettings;
         private IDrawStrategy _drawStrategy;
+        private OpenTKDrawStrategy drawStrategy;
         public Renderer()
         {
             _drawingSettings = DrawingSettings.Instance;
@@ -20,6 +23,14 @@ namespace Viewer.Render
             _drawStrategy = GetDrawStrategy(shape, drawStrategyType);
             _drawStrategy.Draw(g, shape, _drawingSettings, gdiCamera, clientSize, isOrthogonal);
         }
+
+
+        public void DrawShapeOpenTk(GLControl glControl, Shape3D shape, OpenTKCamera camera)
+        {
+            if (drawStrategy is null) drawStrategy = new OpenTKDrawStrategy(glControl, camera);
+        }
+
+
 
         private IDrawStrategy GetDrawStrategy(Shape3D shape, DrawStrategyType drawStrategyType)
         {

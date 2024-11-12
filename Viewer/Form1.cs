@@ -6,6 +6,7 @@ using System.Threading;
 using System.Windows.Forms;
 using OpenTK;
 using Viewer.Render;
+using Viewer.Render.Cameras;
 using Viewer.Resources.Localization;
 using Viewer.UIComponents;
 using Viewer.ViewModel;
@@ -39,10 +40,9 @@ namespace Viewer
 
         public Form1()
         {
+            _viewModel = new ViewerViewModel();
             InitializeComponent();
             InitGdiDrawPanel();
-            DoubleBuffered = true;
-            _viewModel = new ViewerViewModel();
             _colorSliderManager = new ColorSliderManager(this, _rightPanel, _drawPanel);
             _localizer = Localizer.Instance();
             InitUi();
@@ -72,11 +72,13 @@ namespace Viewer
 
         private void InitGdiDrawPanel()
         {
+            _viewModel._gdiCamera = new GDICamera(_viewModel._gdiCamera);
             ReplaceDrawPanel(new BufferedPanel(), OnGDIPaint);
         }
 
         private void InitOpenGlDrawPanel()
         {
+            _viewModel._gdiCamera = new OpenTKCamera(_viewModel._gdiCamera);
             ReplaceDrawPanel(new GLControl(), OnOpenGLPaint);
         }
 
@@ -360,8 +362,7 @@ namespace Viewer
 
         private void OnOpenGLPaint(object sender, PaintEventArgs e)
         {
-            e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            _viewModel.Draw(e.Graphics, _drawPanel.Size);
+            _viewModel.Draw((GLControl)_drawPanel, _drawPanel.Size);
         }
 
         // начало движения мыши
@@ -499,7 +500,11 @@ namespace Viewer
 
             _drawPanel = newPanel;
             _drawPanel.Dock = DockStyle.Fill;
+            if (_drawPanel is GLControl) _viewModel.Draw((GLControl)_drawPanel, _drawPanel.Size);
             _drawPanel.Paint += paintHandler;
+            _drawPanel.MouseDown += OnMouseDown;
+            _drawPanel.MouseMove += OnMouseMove;
+            _drawPanel.MouseUp += OnMouseUp;
 
             _tableLayoutPanel.Controls.Add(_drawPanel, 1, 0);
         }

@@ -11,7 +11,7 @@ namespace Viewer.ViewModel
     public class ViewerViewModel
     {
         private Localizer _localizer;
-        private readonly GDICamera _gdiCamera;
+        public CameraBase _gdiCamera { get; set; }
         private readonly Renderer _renderer;
         private Shape3D[] _shapes;
         public Shape3D CurrentShape { get; private set; }
@@ -88,7 +88,7 @@ namespace Viewer.ViewModel
         /// </summary>
         public void Draw(Graphics g, Size clientSize)
         {
-            _renderer.DrawShape(g, CurrentShape, _gdiCamera, clientSize, IsOrthogonal, _currentDrawStrategy);
+            _renderer.DrawShape(g, CurrentShape, (GDICamera)_gdiCamera, clientSize, IsOrthogonal, _currentDrawStrategy);
         }
 
         /// <summary>
@@ -96,7 +96,7 @@ namespace Viewer.ViewModel
         /// </summary>
         public void Draw(GLControl g, Size clientSize)
         {
-            //_renderer.DrawShape(g, CurrentShape, _gdiCamera, clientSize, IsOrthogonal, _currentDrawStrategy);
+            _renderer.DrawShapeOpenTk(g, CurrentShape, (OpenTKCamera)_gdiCamera);
         }
 
         public void ToggleAutoScroll()
