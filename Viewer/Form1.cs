@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
+using OpenTK;
 using Viewer.Render;
 using Viewer.Resources.Localization;
 using Viewer.UIComponents;
@@ -32,13 +33,14 @@ namespace Viewer
         private ToolStripMenuItem _toggleSpeedMenuItem;
         private ToolStripMenuItem _languageMenuItem;
         private ToolStripMenuItem _fileMenuItem;
-        private BufferedPanel _drawPanel;
+        private Control _drawPanel;
+
 
 
         public Form1()
         {
             InitializeComponent();
-            InitDrawPanel();
+            InitGdiDrawPanel();
             DoubleBuffered = true;
             _viewModel = new ViewerViewModel();
             _colorSliderManager = new ColorSliderManager(this, _rightPanel, _drawPanel);
@@ -68,15 +70,17 @@ namespace Viewer
             InitAutoScrollTimer();
         }
 
-        private void InitDrawPanel()
+        private void InitGdiDrawPanel()
         {
-            _drawPanel = new BufferedPanel()
-            {
-                Dock = DockStyle.Fill
-            };
-
-            _tableLayoutPanel.Controls.Add(_drawPanel, 1, 0);
+            ReplaceDrawPanel(new BufferedPanel(), OnGDIPaint);
         }
+
+        private void InitOpenGlDrawPanel()
+        {
+            ReplaceDrawPanel(new GLControl(), OnOpenGLPaint);
+        }
+
+
 
         private void InitMenu()
         {
@@ -100,9 +104,21 @@ namespace Viewer
             _languageMenuItem.DropDownItems.Add(russianMenuItem);
             _languageMenuItem.DropDownItems.Add(englishMenuItem);
 
+            var renderMenuItem = new ToolStripMenuItem("Способ отрисовки");
+            var gdiRenderMenuItem = new ToolStripMenuItem("GDI+", null, (s, e) => InitGdiDrawPanel());
+            var openGlRenderMenuItem = new ToolStripMenuItem("OpenGl", null, (s, e) => InitOpenGlDrawPanel());
+            renderMenuItem.DropDownItems.Add(gdiRenderMenuItem);
+            renderMenuItem.DropDownItems.Add(openGlRenderMenuItem);
+
+
+
+
+
             _fileMenuItem.DropDownItems.Add(_toggleSpeedMenuItem);
             _fileMenuItem.DropDownItems.Add(_languageMenuItem);
+            _fileMenuItem.DropDownItems.Add(renderMenuItem);
             _menuStrip.Items.Add(_fileMenuItem);
+
             Controls.Add(_menuStrip);
         }
 
@@ -128,7 +144,7 @@ namespace Viewer
                     Size = new Size(200, 45),
                 };
                 _speedSlider.Scroll += OnSpeedSliderScroll;
-                _autoScrollPanel.Controls.Add(_speedSlider,0,0);
+                _autoScrollPanel.Controls.Add(_speedSlider, 0, 0);
                 _autoScrollPanel.SetColumnSpan(_speedSlider, 2);
                 _speedSlider.Anchor = AnchorStyles.Bottom;
             }
@@ -152,7 +168,7 @@ namespace Viewer
             };
             _startStopButton.Click += OnStartStopClicked;
             _startStopButton.Anchor = AnchorStyles.Right | AnchorStyles.Bottom;
-            _autoScrollPanel.Controls.Add(_startStopButton,0,1);
+            _autoScrollPanel.Controls.Add(_startStopButton, 0, 1);
         }
 
         private void InitSpeedTextBox()
@@ -165,7 +181,7 @@ namespace Viewer
             _speedTextBox.KeyDown += OnSpeedTextBoxKeyDown;
             _speedTextBox.TextChanged += OnSpeedTextChanged;
             _speedTextBox.Anchor = AnchorStyles.Left | AnchorStyles.Bottom;
-            _autoScrollPanel.Controls.Add(_speedTextBox,1,1);
+            _autoScrollPanel.Controls.Add(_speedTextBox, 1, 1);
         }
 
         private void InitAutoScrollTimer()
@@ -181,7 +197,7 @@ namespace Viewer
         {
             _shapeSelector = new ComboBox
             {
-                MaximumSize = new Size(200,20),
+                MaximumSize = new Size(200, 20),
                 Dock = DockStyle.Fill,
                 DropDownStyle = ComboBoxStyle.DropDownList
             };
@@ -194,7 +210,7 @@ namespace Viewer
             });
             _shapeSelector.SelectedIndex = 0;
             _shapeSelector.SelectedIndexChanged += OnShapeSelected;
-            _leftPanel.Controls.Add(_shapeSelector,0,0);
+            _leftPanel.Controls.Add(_shapeSelector, 0, 0);
         }
 
         private void InitProjectionSelector()
@@ -213,7 +229,7 @@ namespace Viewer
             });
             _projectionSelector.SelectedIndex = 1;
             _projectionSelector.SelectedIndexChanged += OnProjectionSelected;
-            _leftPanel.Controls.Add(_projectionSelector,0,1);
+            _leftPanel.Controls.Add(_projectionSelector, 0, 1);
         }
 
         private void InitDrawStrategySelector()
@@ -231,7 +247,7 @@ namespace Viewer
             });
             _drawStrategySelector.SelectedIndex = 0;
             _drawStrategySelector.SelectedIndexChanged += OnDrawStrategySelected;
-            _leftPanel.Controls.Add(_drawStrategySelector,0,2);
+            _leftPanel.Controls.Add(_drawStrategySelector, 0, 2);
         }
 
         private void InitZoomButtons()
@@ -246,8 +262,8 @@ namespace Viewer
             _zoomOutButton.Size = new Size(40, 40);
             _zoomOutButton.Click += OnZoomOutClicked;
 
-         
-            _buttonPanel.Controls.Add(_zoomOutButton,0,0);
+
+            _buttonPanel.Controls.Add(_zoomOutButton, 0, 0);
             _buttonPanel.Controls.Add(_zoomInButton, 1, 0);
 
 
@@ -336,9 +352,15 @@ namespace Viewer
 
         }
 
-        private void OnPaint(object sender, PaintEventArgs e)
+        private void OnGDIPaint(object sender, PaintEventArgs e)
         {
             e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias; // сглаживание при отрисовке
+            _viewModel.Draw(e.Graphics, _drawPanel.Size);
+        }
+
+        private void OnOpenGLPaint(object sender, PaintEventArgs e)
+        {
+            e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             _viewModel.Draw(e.Graphics, _drawPanel.Size);
         }
 
@@ -404,7 +426,7 @@ namespace Viewer
         //-----------------ПРОЧИЕ_МЕТОДЫ-----------------
 
 
- 
+
 
         private void UpdateSlidersBasedOnSelection()
         {
@@ -436,13 +458,10 @@ namespace Viewer
 
         private void AddBaseEvents()
         {
-            _drawPanel.Paint += OnPaint;
             MouseWheel += OnMouseWheel;
             Resize += OnResize;
             _localizer.CultureChanged += UpdateLocalizedText;
-
             AddMouseEvents();
-
         }
 
         private void AddMouseEvents()
@@ -453,6 +472,10 @@ namespace Viewer
                 control.MouseMove += OnMouseMove;
                 control.MouseUp += OnMouseUp;
             }
+
+            _tableLayoutPanel.MouseDown += OnMouseDown;
+            _tableLayoutPanel.MouseMove += OnMouseMove;
+            _tableLayoutPanel.MouseUp += OnMouseUp;
         }
 
         private void LoadSettings()
@@ -461,6 +484,24 @@ namespace Viewer
             _shapeSelector.SelectedIndex = Properties.Settings.Default.ShapeIndex;
             _projectionSelector.SelectedIndex = Properties.Settings.Default.ProjectionIndex;
             _drawStrategySelector.SelectedIndex = Properties.Settings.Default.DrawStrategyIndex;
+        }
+
+
+        private void ReplaceDrawPanel(Control newPanel, PaintEventHandler paintHandler)
+        {
+            if (_drawPanel != null)
+            {
+                _drawPanel.Paint -= OnGDIPaint;
+                _drawPanel.Paint -= OnOpenGLPaint;
+                _tableLayoutPanel.Controls.Remove(_drawPanel);
+                _drawPanel.Dispose();
+            }
+
+            _drawPanel = newPanel;
+            _drawPanel.Dock = DockStyle.Fill;
+            _drawPanel.Paint += paintHandler;
+
+            _tableLayoutPanel.Controls.Add(_drawPanel, 1, 0);
         }
     }
 }

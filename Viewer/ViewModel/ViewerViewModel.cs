@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using OpenTK;
+using System.Drawing;
 using Viewer.Model.Shapes;
 using Viewer.Render;
 using Viewer.Render.Cameras;
@@ -82,9 +83,20 @@ namespace Viewer.ViewModel
             _gdiCamera.Zoom(factor);
         }
 
+        /// <summary>
+        /// Данная перегрузка служит для отрисовки через GDI+ на Canvas
+        /// </summary>
         public void Draw(Graphics g, Size clientSize)
         {
             _renderer.DrawShape(g, CurrentShape, _gdiCamera, clientSize, IsOrthogonal, _currentDrawStrategy);
+        }
+
+        /// <summary>
+        /// Данная перегрузка служит для отрисовки через OpenTk на GLControl
+        /// </summary>
+        public void Draw(GLControl g, Size clientSize)
+        {
+            //_renderer.DrawShape(g, CurrentShape, _gdiCamera, clientSize, IsOrthogonal, _currentDrawStrategy);
         }
 
         public void ToggleAutoScroll()
