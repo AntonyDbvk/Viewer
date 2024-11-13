@@ -70,5 +70,17 @@ namespace Viewer.Properties {
                 this["DrawStrategyIndex"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool IsGdi {
+            get {
+                return ((bool)(this["IsGdi"]));
+            }
+            set {
+                this["IsGdi"] = value;
+            }
+        }
     }
 }

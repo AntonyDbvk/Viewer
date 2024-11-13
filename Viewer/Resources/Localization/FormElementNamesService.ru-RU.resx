@@ -123,6 +123,9 @@
   <data name="Cube" xml:space="preserve">
     <value>Куб</value>
   </data>
+  <data name="DrawingMethod" xml:space="preserve">
+    <value>Способ отрисовки</value>
+  </data>
   <data name="EdgeColor" xml:space="preserve">
     <value>Цвет для рёбер</value>
   </data>

@@ -82,7 +82,5 @@ namespace Viewer.Render.DrawStrategy.OpenGlStrategy.Base
                 GL.Disable(EnableCap.Blend);
             }
         }
-
-
     }
 }

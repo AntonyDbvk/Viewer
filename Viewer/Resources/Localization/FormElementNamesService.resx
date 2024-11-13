@@ -123,6 +123,9 @@
   <data name="Cube" xml:space="preserve">
     <value>Cube</value>
   </data>
+  <data name="DrawingMethod" xml:space="preserve">
+    <value>Drawing method</value>
+  </data>
   <data name="EdgeColor" xml:space="preserve">
     <value>Edge Color</value>
   </data>

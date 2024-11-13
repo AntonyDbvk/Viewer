@@ -35,6 +35,7 @@ namespace Viewer
         private ToolStripMenuItem _toggleSpeedMenuItem;
         private ToolStripMenuItem _languageMenuItem;
         private ToolStripMenuItem _fileMenuItem;
+        private ToolStripMenuItem _renderMenuItem;
         private Control _drawPanel;
 
 
@@ -113,11 +114,11 @@ namespace Viewer
             _languageMenuItem.DropDownItems.Add(russianMenuItem);
             _languageMenuItem.DropDownItems.Add(englishMenuItem);
 
-            var renderMenuItem = new ToolStripMenuItem("Способ отрисовки");
+            _renderMenuItem = new ToolStripMenuItem(_localizer.GetString("DrawingMethod"));
             var gdiRenderMenuItem = new ToolStripMenuItem("GDI+", null, (s, e) => InitGdiDrawPanel());
             var openGlRenderMenuItem = new ToolStripMenuItem("OpenGl", null, (s, e) => InitOpenGlDrawPanel());
-            renderMenuItem.DropDownItems.Add(gdiRenderMenuItem);
-            renderMenuItem.DropDownItems.Add(openGlRenderMenuItem);
+            _renderMenuItem.DropDownItems.Add(gdiRenderMenuItem);
+            _renderMenuItem.DropDownItems.Add(openGlRenderMenuItem);
 
 
 
@@ -125,7 +126,7 @@ namespace Viewer
 
             _fileMenuItem.DropDownItems.Add(_toggleSpeedMenuItem);
             _fileMenuItem.DropDownItems.Add(_languageMenuItem);
-            _fileMenuItem.DropDownItems.Add(renderMenuItem);
+            _fileMenuItem.DropDownItems.Add(_renderMenuItem);
             _menuStrip.Items.Add(_fileMenuItem);
 
             Controls.Add(_menuStrip);
@@ -435,6 +436,8 @@ namespace Viewer
             Properties.Settings.Default.ShapeIndex = _shapeSelector.SelectedIndex;
             Properties.Settings.Default.ProjectionIndex = _projectionSelector.SelectedIndex;
             Properties.Settings.Default.DrawStrategyIndex = _drawStrategySelector.SelectedIndex;
+            Properties.Settings.Default.IsGdi = _drawPanel is Panel;
+
             Properties.Settings.Default.Save();
         }
 
@@ -453,6 +456,7 @@ namespace Viewer
 
         private void UpdateLocalizedText()
         {
+            _renderMenuItem.Text = _localizer.GetString("DrawingMethod");
             _fileMenuItem.Text = _localizer.GetString("Options");
             _languageMenuItem.Text = _localizer.GetString("Language");
             _toggleSpeedMenuItem.Text = _localizer.GetString("SpeedInDegrees");
@@ -499,6 +503,9 @@ namespace Viewer
             _shapeSelector.SelectedIndex = Properties.Settings.Default.ShapeIndex;
             _projectionSelector.SelectedIndex = Properties.Settings.Default.ProjectionIndex;
             _drawStrategySelector.SelectedIndex = Properties.Settings.Default.DrawStrategyIndex;
+
+            if (Properties.Settings.Default.IsGdi) InitGdiDrawPanel();
+            else InitOpenGlDrawPanel();
         }
 
 

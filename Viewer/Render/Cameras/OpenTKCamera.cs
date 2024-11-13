@@ -46,8 +46,5 @@ namespace Viewer.Render.Cameras
                 _farClip
             );
         }
-
-
-
     }
 }

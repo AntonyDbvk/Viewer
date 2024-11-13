@@ -79,6 +79,15 @@ namespace Viewer.Resources.Localization {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Drawing method.
+        /// </summary>
+        internal static string DrawingMethod {
+            get {
+                return ResourceManager.GetString("DrawingMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Edge Color.
         /// </summary>
         internal static string EdgeColor {
