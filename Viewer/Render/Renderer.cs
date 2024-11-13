@@ -4,7 +4,12 @@ using OpenTK.Graphics.OpenGL;
 using Viewer.Model.Shapes;
 using Viewer.Render.Cameras;
 using Viewer.Render.DrawStrategy;
-using Viewer.Render.DrawStrategy.Base;
+using Viewer.Render.DrawStrategy.GDIStrategy;
+using Viewer.Render.DrawStrategy.GDIStrategy.Base;
+using Viewer.Render.DrawStrategy.OpenGlStrategy;
+using System;
+using System.Windows.Forms;
+using Viewer.Render.DrawStrategy.OpenGlStrategy.Base;
 
 namespace Viewer.Render
 {
@@ -12,7 +17,11 @@ namespace Viewer.Render
     {
         private readonly DrawingSettings _drawingSettings;
         private IDrawStrategy _drawStrategy;
-        private OpenTKDrawStrategy drawStrategy;
+        private IOpenGlDrawStrategy _openGlDrawStrategy;
+        private DrawStrategyType _currentDrawStrategyType;
+        private DrawStrategyType _currentOpenGlDrawStrategyType;
+        private Type _currentShapeType;
+
         public Renderer()
         {
             _drawingSettings = DrawingSettings.Instance;
@@ -24,29 +33,55 @@ namespace Viewer.Render
             _drawStrategy.Draw(g, shape, _drawingSettings, gdiCamera, clientSize, isOrthogonal);
         }
 
-
-        public void DrawShapeOpenTk(GLControl glControl, Shape3D shape, OpenTKCamera camera, bool isOrthogonal)
+        public void DrawShapeOpenTk(GLControl glControl, Shape3D shape, OpenTKCamera camera, bool isOrthogonal, DrawStrategyType drawStrategyType)
         {
-
-            if (drawStrategy is null) drawStrategy = new OpenTKDrawStrategy();
-            drawStrategy.Draw(glControl, camera, shape,isOrthogonal);
+            _openGlDrawStrategy = GetOpenGlDrawStrategy(shape, drawStrategyType);
+            _openGlDrawStrategy.Draw(glControl, camera, shape, isOrthogonal);
         }
-
-
 
         private IDrawStrategy GetDrawStrategy(Shape3D shape, DrawStrategyType drawStrategyType)
         {
-            if (shape is Tesseract)
+            if (_drawStrategy == null || _currentDrawStrategyType != drawStrategyType || _currentShapeType != shape.GetType())
             {
-                return drawStrategyType == DrawStrategyType.WithFaces
-                    ? (IDrawStrategy)new TesseractWithFacesDrawStrategy()
-                    : new TesseractDrawStrategy();
+                _currentDrawStrategyType = drawStrategyType;
+                _currentShapeType = shape.GetType();
+                if (shape is Tesseract)
+                {
+                    _drawStrategy = drawStrategyType == DrawStrategyType.WithFaces
+                        ? (IDrawStrategy)new TesseractWithFacesDrawStrategy()
+                        : new TesseractDrawStrategy();
+                }
+                else
+                {
+                    _drawStrategy = drawStrategyType == DrawStrategyType.WithFaces
+                        ? (IDrawStrategy)new ShapeWithFacesStrategy()
+                        : new ShapeDrawStrategy();
+                }
             }
-
-            return drawStrategyType == DrawStrategyType.WithFaces
-                ? (IDrawStrategy)new ShapeWithFacesStrategy()
-                : new ShapeDrawStrategy();
+            return _drawStrategy;
         }
 
+        private IOpenGlDrawStrategy GetOpenGlDrawStrategy(Shape3D shape, DrawStrategyType drawStrategyType)
+        {
+            if (_openGlDrawStrategy == null || _currentOpenGlDrawStrategyType != drawStrategyType || _currentShapeType != shape.GetType())
+            {
+                _currentOpenGlDrawStrategyType = drawStrategyType;
+                _currentShapeType = shape.GetType();
+                if (shape is Tesseract)
+                {
+                    _openGlDrawStrategy = drawStrategyType == DrawStrategyType.WithFaces
+                        ? (IOpenGlDrawStrategy)new OpenGlTesseractWithFacesStrategy()
+                        : new OpenGlTesseractStrategy();
+                }
+                else
+                {
+                    _openGlDrawStrategy = drawStrategyType == DrawStrategyType.WithFaces
+                        ? (IOpenGlDrawStrategy)new OpenGlShapeWithFacesStrategy()
+                        : new OpenGlShapeDrawStrategy();
+                }
+            }
+            return _openGlDrawStrategy;
+        }
     }
+
 }

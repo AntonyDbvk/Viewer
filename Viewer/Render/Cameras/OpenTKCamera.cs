@@ -37,7 +37,8 @@ namespace Viewer.Render.Cameras
                 );
             }
 
-            float orthoSize = Distance / 2f;
+            float scale = 1f + Distance * 0.1f; 
+            float orthoSize = (Distance / 2f) * scale;
             return Matrix4.CreateOrthographic(
                 orthoSize * aspectRatio,
                 orthoSize,
@@ -45,6 +46,7 @@ namespace Viewer.Render.Cameras
                 _farClip
             );
         }
+
 
 
     }

@@ -1,9 +1,8 @@
 ﻿using System.Drawing;
 using Viewer.Model.Geometry;
-using Viewer.Model.Geometry;
 using Viewer.Render.Cameras;
 
-namespace Viewer.Render.DrawStrategy.Base
+namespace Viewer.Render.DrawStrategy.GDIStrategy.Base
 {
     public abstract class FaceDrawStrategyBase : DrawStrategyBase
     {

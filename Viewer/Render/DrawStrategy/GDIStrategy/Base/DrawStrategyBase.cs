@@ -3,7 +3,7 @@ using Viewer.Model.Geometry;
 using Viewer.Model.Shapes;
 using Viewer.Render.Cameras;
 
-namespace Viewer.Render.DrawStrategy.Base
+namespace Viewer.Render.DrawStrategy.GDIStrategy.Base
 {
     public abstract class DrawStrategyBase : IDrawStrategy
     {
