@@ -96,7 +96,7 @@ namespace Viewer.ViewModel
         /// </summary>
         public void Draw(GLControl g, Size clientSize)
         {
-            _renderer.DrawShapeOpenTk(g, CurrentShape, (OpenTKCamera)_gdiCamera);
+            _renderer.DrawShapeOpenTk(g, CurrentShape, (OpenTKCamera)_gdiCamera,IsOrthogonal);
         }
 
         public void ToggleAutoScroll()

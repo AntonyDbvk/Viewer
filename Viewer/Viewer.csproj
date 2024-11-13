@@ -91,6 +91,7 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="Render\Cameras\OpenTKCamera.cs" />
+    <Compile Include="Render\ColorConverter.cs" />
     <Compile Include="Render\DrawingSettings.cs" />
     <Compile Include="Render\DrawStrategyType.cs" />
     <Compile Include="Render\DrawStrategy\Base\DrawStrategyBase.cs" />

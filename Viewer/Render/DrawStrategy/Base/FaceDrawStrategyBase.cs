@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 using Viewer.Model.Geometry;
-using Viewer.Model.Geometry.Viewer.Model.Geometry;
+using Viewer.Model.Geometry;
 using Viewer.Render.Cameras;
 
 namespace Viewer.Render.DrawStrategy.Base

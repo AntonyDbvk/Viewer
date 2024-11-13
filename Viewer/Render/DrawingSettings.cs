@@ -5,8 +5,8 @@ namespace Viewer.Render
     {
         public Pen EdgePen1 { get; set; }
         public Pen EdgePen2 { get; set; }
-        public Brush FaceBrush1 { get; set; }
-        public Brush FaceBrush2 { get; set; }
+        public SolidBrush FaceBrush1 { get; set; }
+        public SolidBrush FaceBrush2 { get; set; }
 
         private DrawingSettings()
         {

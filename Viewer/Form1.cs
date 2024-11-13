@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using OpenTK;
+using OpenTK.Graphics.OpenGL;
 using Viewer.Render;
 using Viewer.Render.Cameras;
 using Viewer.Resources.Localization;
@@ -42,8 +43,8 @@ namespace Viewer
         {
             _viewModel = new ViewerViewModel();
             InitializeComponent();
-            InitGdiDrawPanel();
             _colorSliderManager = new ColorSliderManager(this, _rightPanel, _drawPanel);
+            InitGdiDrawPanel();
             _localizer = Localizer.Instance();
             InitUi();
             AddBaseEvents();
@@ -73,16 +74,22 @@ namespace Viewer
         private void InitGdiDrawPanel()
         {
             _viewModel._gdiCamera = new GDICamera(_viewModel._gdiCamera);
-            ReplaceDrawPanel(new BufferedPanel(), OnGDIPaint);
+            ReplaceDrawPanel(new BufferedPanel(), OnGDIPaint,OnGDIResize);
         }
 
         private void InitOpenGlDrawPanel()
         {
             _viewModel._gdiCamera = new OpenTKCamera(_viewModel._gdiCamera);
-            ReplaceDrawPanel(new GLControl(), OnOpenGLPaint);
+            ReplaceDrawPanel(new GLControl(), OnOpenGLPaint,OnOpenGlResize);
+            GL.Enable(EnableCap.DepthTest);
+            Color backgroundColor = SystemColors.Control;
+            GL.ClearColor(
+                backgroundColor.R / 255f,
+                backgroundColor.G / 255f,
+                backgroundColor.B / 255f,
+                1.0f
+            );
         }
-
-
 
         private void InitMenu()
         {
@@ -329,9 +336,16 @@ namespace Viewer
             _drawPanel.Invalidate();
         }
 
-        private void OnResize(object sender, EventArgs e)
+        private void OnGDIResize(object sender, EventArgs e)
         {
             _drawPanel.Invalidate();
+        }
+
+        private void OnOpenGlResize(object sender, EventArgs e)
+        {
+            GL.Viewport(0, 0, _drawPanel.Width, _drawPanel.Height);
+            GL.MatrixMode(MatrixMode.Projection);
+            GL.LoadIdentity();
         }
 
         private void OnZoomInClicked(object sender, EventArgs e)
@@ -398,6 +412,7 @@ namespace Viewer
         private void OnProjectionSelected(object sender, EventArgs e)
         {
             _viewModel.IsOrthogonal = _projectionSelector.SelectedIndex == 0;
+            if (_drawPanel is GLControl) InitOpenGlDrawPanel();
             _drawPanel.Invalidate();
         }
 
@@ -460,7 +475,6 @@ namespace Viewer
         private void AddBaseEvents()
         {
             MouseWheel += OnMouseWheel;
-            Resize += OnResize;
             _localizer.CultureChanged += UpdateLocalizedText;
             AddMouseEvents();
         }
@@ -488,25 +502,23 @@ namespace Viewer
         }
 
 
-        private void ReplaceDrawPanel(Control newPanel, PaintEventHandler paintHandler)
+        private void ReplaceDrawPanel(Control newPanel, PaintEventHandler paintHandler,EventHandler resizeHandler)
         {
             if (_drawPanel != null)
             {
-                _drawPanel.Paint -= OnGDIPaint;
-                _drawPanel.Paint -= OnOpenGLPaint;
                 _tableLayoutPanel.Controls.Remove(_drawPanel);
                 _drawPanel.Dispose();
             }
 
             _drawPanel = newPanel;
             _drawPanel.Dock = DockStyle.Fill;
-            if (_drawPanel is GLControl) _viewModel.Draw((GLControl)_drawPanel, _drawPanel.Size);
+            _drawPanel.Resize += resizeHandler;
             _drawPanel.Paint += paintHandler;
             _drawPanel.MouseDown += OnMouseDown;
             _drawPanel.MouseMove += OnMouseMove;
             _drawPanel.MouseUp += OnMouseUp;
-
             _tableLayoutPanel.Controls.Add(_drawPanel, 1, 0);
+            _colorSliderManager.DrawPanel = _drawPanel;
         }
     }
 }

@@ -10,7 +10,7 @@ namespace Viewer.UIComponents
     {
         private readonly Form _form;
         private readonly TableLayoutPanel _panel;
-        private readonly Control _drawPanel;
+        public Control DrawPanel { private get; set; }
         private readonly Localizer _localizer;
         private readonly List<ColorSliderGroup> _edgeSliderGroups;
         private readonly List<ColorSliderGroup> _faceSliderGroups;
@@ -21,9 +21,9 @@ namespace Viewer.UIComponents
             _localizer = Localizer.Instance();
             _edgeSliderGroups = new List<ColorSliderGroup>();
             _faceSliderGroups = new List<ColorSliderGroup>();
-            _form.Resize += (s, e) => RepositionSliders();
+
             _panel = panel;
-            _drawPanel = drawPanel;
+            DrawPanel = drawPanel;
         }
 
         public void InitializeSliders(bool isTesseract, bool hasFaces)
@@ -35,7 +35,7 @@ namespace Viewer.UIComponents
             CreateSliderGroups(_faceSliderGroups, withAlpha, true, _localizer.GetString("FaceColor"));
 
             SetSliderValuesFromSettings();
-            RepositionSliders();
+
         }
 
         private void SetSliderValuesFromSettings()
@@ -68,8 +68,8 @@ namespace Viewer.UIComponents
         {
             for (int i = 0; i < count; i++)
             {
-                var sliderGroup = new ColorSliderGroup(includeAlpha, $"{labelBaseText} {i + 1}",_localizer.GetString("Color") );
-                sliderGroup.AddToForm(_panel,includeAlpha,i);
+                var sliderGroup = new ColorSliderGroup(includeAlpha, $"{labelBaseText} {i + 1}", _localizer.GetString("Color"));
+                sliderGroup.AddToForm(_panel, includeAlpha, i);
                 sliderGroups.Add(sliderGroup);
                 sliderGroup.ColorChanged += OnSliderColorChanged;
             }
@@ -103,30 +103,23 @@ namespace Viewer.UIComponents
 
             if (_edgeSliderGroups.Contains(sliderGroup))
             {
-                if (_edgeSliderGroups.IndexOf(sliderGroup) == 0) 
+                if (_edgeSliderGroups.IndexOf(sliderGroup) == 0)
                     DrawingSettings.Instance.EdgePen1.Color = color;
-                else 
+                else
                     DrawingSettings.Instance.EdgePen2.Color = color;
             }
             else if (_faceSliderGroups.Contains(sliderGroup))
             {
-                if (_faceSliderGroups.IndexOf(sliderGroup) == 0) 
+                if (_faceSliderGroups.IndexOf(sliderGroup) == 0)
                     DrawingSettings.Instance.FaceBrush1 = new SolidBrush(color);
                 else
                     DrawingSettings.Instance.FaceBrush2 = new SolidBrush(color);
             }
 
             _panel.Invalidate();
-            _drawPanel.Invalidate();
+            DrawPanel.Invalidate();
         }
 
-        private void RepositionSliders()
-        {
-            int edgeXOffset = _panel.ClientSize.Width - 130; // правый край для рёбер
-            int faceXOffset = _panel.ClientSize.Width - 310; // левее для граней
-            int initialY = 40;
-            int groupSpacing = 280;
-            Color color = Color.BlueViolet;
-        }
+
     }
 }

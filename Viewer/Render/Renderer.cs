@@ -25,9 +25,11 @@ namespace Viewer.Render
         }
 
 
-        public void DrawShapeOpenTk(GLControl glControl, Shape3D shape, OpenTKCamera camera)
+        public void DrawShapeOpenTk(GLControl glControl, Shape3D shape, OpenTKCamera camera, bool isOrthogonal)
         {
-            if (drawStrategy is null) drawStrategy = new OpenTKDrawStrategy(glControl, camera);
+
+            if (drawStrategy is null) drawStrategy = new OpenTKDrawStrategy();
+            drawStrategy.Draw(glControl, camera, shape,isOrthogonal);
         }
 
 
