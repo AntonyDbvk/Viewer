@@ -43,6 +43,7 @@ namespace Viewer.Render
         {
             if (_drawStrategy == null || _currentDrawStrategyType != drawStrategyType || _currentShapeType != shape.GetType())
             {
+                _openGlDrawStrategy = null;
                 _currentDrawStrategyType = drawStrategyType;
                 _currentShapeType = shape.GetType();
                 if (shape is Tesseract)
@@ -65,6 +66,7 @@ namespace Viewer.Render
         {
             if (_openGlDrawStrategy == null || _currentOpenGlDrawStrategyType != drawStrategyType || _currentShapeType != shape.GetType())
             {
+                _drawStrategy = null;
                 _currentOpenGlDrawStrategyType = drawStrategyType;
                 _currentShapeType = shape.GetType();
                 if (shape is Tesseract)

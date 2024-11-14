@@ -533,6 +533,7 @@ namespace Viewer
             _tableLayoutPanel.Controls.Add(_drawPanel, 1, 0);
             _colorSliderManager.DrawPanel = _drawPanel;
 
+            _drawPanel.Invalidate();
         }
     }
 }
