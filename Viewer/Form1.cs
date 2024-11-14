@@ -36,17 +36,20 @@ namespace Viewer
         private ToolStripMenuItem _languageMenuItem;
         private ToolStripMenuItem _fileMenuItem;
         private ToolStripMenuItem _renderMenuItem;
+        private ToolStripMenuItem _gdiRenderMenuItem;
+        private ToolStripMenuItem _openGlRenderMenuItem;
         private Control _drawPanel;
 
 
 
         public Form1()
         {
-            _viewModel = new ViewerViewModel();
             InitializeComponent();
+            _viewModel = new ViewerViewModel();
+            _localizer = Localizer.Instance();
+            InitMenu();
             _colorSliderManager = new ColorSliderManager(this, _rightPanel, _drawPanel);
             InitGdiDrawPanel();
-            _localizer = Localizer.Instance();
             InitUi();
             AddBaseEvents();
         }
@@ -55,7 +58,6 @@ namespace Viewer
 
         private void InitUi()
         {
-            InitMenu();
             InitShapeSelector();
             InitProjectionSelector();
             InitDrawStrategySelector();
@@ -74,12 +76,16 @@ namespace Viewer
 
         private void InitGdiDrawPanel()
         {
+            _gdiRenderMenuItem.Checked = true;
+            _openGlRenderMenuItem.Checked = false;
             _viewModel._gdiCamera = new GDICamera(_viewModel._gdiCamera);
             ReplaceDrawPanel(new BufferedPanel(), OnGDIPaint,OnGDIResize);
         }
 
         private void InitOpenGlDrawPanel()
         {
+            _gdiRenderMenuItem.Checked = false;
+            _openGlRenderMenuItem.Checked = true;
             _viewModel._gdiCamera = new OpenTKCamera(_viewModel._gdiCamera);
             ReplaceDrawPanel(new GLControl(), OnOpenGLPaint,OnOpenGlResize);
             GL.Enable(EnableCap.DepthTest);
@@ -115,10 +121,10 @@ namespace Viewer
             _languageMenuItem.DropDownItems.Add(englishMenuItem);
 
             _renderMenuItem = new ToolStripMenuItem(_localizer.GetString("DrawingMethod"));
-            var gdiRenderMenuItem = new ToolStripMenuItem("GDI+", null, (s, e) => InitGdiDrawPanel());
-            var openGlRenderMenuItem = new ToolStripMenuItem("OpenGl", null, (s, e) => InitOpenGlDrawPanel());
-            _renderMenuItem.DropDownItems.Add(gdiRenderMenuItem);
-            _renderMenuItem.DropDownItems.Add(openGlRenderMenuItem);
+             _gdiRenderMenuItem = new ToolStripMenuItem("GDI+", null, (s, e) => InitGdiDrawPanel());
+             _openGlRenderMenuItem = new ToolStripMenuItem("OpenGl", null, (s, e) => InitOpenGlDrawPanel());
+            _renderMenuItem.DropDownItems.Add(_gdiRenderMenuItem);
+            _renderMenuItem.DropDownItems.Add(_openGlRenderMenuItem);
 
 
 
