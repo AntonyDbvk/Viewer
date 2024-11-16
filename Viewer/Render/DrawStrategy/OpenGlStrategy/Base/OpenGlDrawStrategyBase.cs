@@ -4,30 +4,35 @@ using OpenTK.Graphics.OpenGL;
 using Viewer.Model.Geometry;
 using Viewer.Model.Shapes;
 using Viewer.Render.Cameras;
+using Viewer.Render.DrawStrategy.DrawContext;
+using Viewer.Render.DrawStrategy.GDIStrategy.Base;
 
 namespace Viewer.Render.DrawStrategy.OpenGlStrategy.Base
 {
-    public abstract class OpenGlDrawStrategyBase : IOpenGlDrawStrategy
+    public abstract class OpenGlDrawStrategyBase : IDrawStrategy
     {
         protected abstract void DrawShape(Shape3D shape);
-        public virtual void Draw(GLControl glControl, OpenTKCamera camera, Shape3D shape, bool isOrthogonal)
+        public virtual void Draw(IDrawContext context, Shape3D model, DrawingSettings settings, CameraBase camera, bool isOrthogonal)
         {
+            var currentContext = context as OpenGLDrawContext;
+            var glControl = currentContext.GLControl;
+            var openGlCamera = camera as OpenGLCamera; 
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-            Matrix4 projectionMatrix = camera.GetProjectionMatrix((float)glControl.Width / glControl.Height, isOrthogonal);
+            Matrix4 projectionMatrix = openGlCamera.GetProjectionMatrix((float)glControl.Width / glControl.Height, isOrthogonal);
             GL.MatrixMode(MatrixMode.Projection);
             GL.LoadMatrix(ref projectionMatrix);
 
-            Matrix4 viewMatrix = camera.GetViewMatrix();
+            Matrix4 viewMatrix = openGlCamera.GetViewMatrix();
             GL.MatrixMode(MatrixMode.Modelview);
             GL.LoadMatrix(ref viewMatrix);
 
-            SetupCamera(camera);
-            DrawShape(shape);
+            SetupCamera((OpenGLCamera)camera);
+            DrawShape(model);
 
             glControl.SwapBuffers();
         }
 
-        protected void SetupCamera(OpenTKCamera camera)
+        protected void SetupCamera(OpenGLCamera camera)
         {
             GL.MatrixMode(MatrixMode.Modelview);
             GL.LoadIdentity();

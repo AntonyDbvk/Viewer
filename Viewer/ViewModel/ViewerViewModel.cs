@@ -3,6 +3,7 @@ using System.Drawing;
 using Viewer.Model.Shapes;
 using Viewer.Render;
 using Viewer.Render.Cameras;
+using Viewer.Render.DrawStrategy.DrawContext;
 using Viewer.Render.RotationSpeedStrategy;
 using Viewer.Resources.Localization;
 
@@ -11,7 +12,7 @@ namespace Viewer.ViewModel
     public class ViewerViewModel
     {
         private Localizer _localizer;
-        public CameraBase _gdiCamera { get; set; }
+        public CameraBase Camera { get; set; }
         private readonly Renderer _renderer;
         private Shape3D[] _shapes;
         public Shape3D CurrentShape { get; private set; }
@@ -31,7 +32,7 @@ namespace Viewer.ViewModel
         public ViewerViewModel()
         {
             _localizer = Localizer.Instance("Viewer.Resources.Localization.FormElementNamesService", typeof(ViewerViewModel).Assembly);
-            _gdiCamera = new GDICamera(DefaultCameraZoom);
+            Camera = new GDICamera(DefaultCameraZoom);
             _renderer = new Renderer();
             _rotationSpeedStrategy = new SimpleRotationSpeedStrategy();
             Init_shapes();
@@ -65,39 +66,33 @@ namespace Viewer.ViewModel
 
         public void UpdateCameraRotation(float deltaX, float deltaY)
         {
-            _gdiCamera.UpdateAngles(deltaX, deltaY);
+            Camera.UpdateAngles(deltaX, deltaY);
         }
 
         public void ZoomIn()
         {
-            _gdiCamera.Zoom(-0.5f);
+            Camera.Zoom(-0.5f);
         }
 
         public void ZoomOut()
         {
-            _gdiCamera.Zoom(0.5f);
+            Camera.Zoom(0.5f);
         }
 
         public void Zoom(float factor)
         {
-            _gdiCamera.Zoom(factor);
+            Camera.Zoom(factor);
         }
 
         /// <summary>
         /// Данная перегрузка служит для отрисовки через GDI+ на Canvas
         /// </summary>
-        public void Draw(Graphics g, Size clientSize)
+        public void Draw(IDrawContext context)
         {
-            _renderer.DrawShape(g, CurrentShape, (GDICamera)_gdiCamera, clientSize, IsOrthogonal, _currentDrawStrategy);
+            _renderer.DrawShape(context, CurrentShape,Camera, IsOrthogonal, _currentDrawStrategy);
         }
 
-        /// <summary>
-        /// Данная перегрузка служит для отрисовки через OpenTk на GLControl
-        /// </summary>
-        public void Draw(GLControl g, Size clientSize)
-        {
-            _renderer.DrawShapeOpenTk(g, CurrentShape, (OpenTKCamera)_gdiCamera,IsOrthogonal,_currentDrawStrategy);
-        }
+
 
         public void ToggleAutoScroll()
         {

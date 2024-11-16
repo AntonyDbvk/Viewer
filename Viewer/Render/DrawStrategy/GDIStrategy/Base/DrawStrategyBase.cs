@@ -2,12 +2,13 @@
 using Viewer.Model.Geometry;
 using Viewer.Model.Shapes;
 using Viewer.Render.Cameras;
+using Viewer.Render.DrawStrategy.DrawContext;
 
 namespace Viewer.Render.DrawStrategy.GDIStrategy.Base
 {
     public abstract class DrawStrategyBase : IDrawStrategy
     {
-        public abstract void Draw(Graphics g, Shape3D model, DrawingSettings settings, GDICamera gdiCamera, Size clientSize, bool isOrthogonal);
+        public abstract void Draw(IDrawContext context, Shape3D model, DrawingSettings settings, CameraBase gdiCamera, bool isOrthogonal);
 
         protected void DrawEdges(Graphics g, Vertex[] vertices, Edge[] edges, Pen pen, GDICamera gdiCamera, Size clientSize, bool isOrthogonal)
         {

@@ -4,10 +4,10 @@ using OpenTK.Graphics.OpenGL;
 
 namespace Viewer.Render.Cameras
 {
-    public class OpenTKCamera : CameraBase
+    public class OpenGLCamera : CameraBase
     {
-        public OpenTKCamera(float initialDistance) : base(initialDistance) { }
-        public OpenTKCamera(CameraBase camera) : base(camera) { }
+        public OpenGLCamera(float initialDistance) : base(initialDistance) { }
+        public OpenGLCamera(CameraBase camera) : base(camera) { }
 
         private float _fieldOfView = 45f;
         private float _nearClip = 0.1f;

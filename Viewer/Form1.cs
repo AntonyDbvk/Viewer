@@ -8,6 +8,7 @@ using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using Viewer.Render;
 using Viewer.Render.Cameras;
+using Viewer.Render.DrawStrategy.DrawContext;
 using Viewer.Resources.Localization;
 using Viewer.UIComponents;
 using Viewer.ViewModel;
@@ -78,7 +79,7 @@ namespace Viewer
         {
             _gdiRenderMenuItem.Checked = true;
             _openGlRenderMenuItem.Checked = false;
-            _viewModel._gdiCamera = new GDICamera(_viewModel._gdiCamera);
+            _viewModel.Camera = new GDICamera(_viewModel.Camera);
             ReplaceDrawPanel(new BufferedPanel(), OnGDIPaint,OnGDIResize);
         }
 
@@ -86,7 +87,7 @@ namespace Viewer
         {
             _gdiRenderMenuItem.Checked = false;
             _openGlRenderMenuItem.Checked = true;
-            _viewModel._gdiCamera = new OpenTKCamera(_viewModel._gdiCamera);
+            _viewModel.Camera = new OpenGLCamera(_viewModel.Camera);
             ReplaceDrawPanel(new GLControl(), OnOpenGLPaint,OnOpenGlResize);
             GL.Enable(EnableCap.DepthTest);
             Color backgroundColor = SystemColors.Control;
@@ -378,12 +379,12 @@ namespace Viewer
         private void OnGDIPaint(object sender, PaintEventArgs e)
         {
             e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias; // сглаживание при отрисовке
-            _viewModel.Draw(e.Graphics, _drawPanel.Size);
+            _viewModel.Draw(new GDIDrawContext(e.Graphics,_drawPanel.Size));
         }
 
         private void OnOpenGLPaint(object sender, PaintEventArgs e)
         {
-            _viewModel.Draw((GLControl)_drawPanel, _drawPanel.Size);
+            _viewModel.Draw(new OpenGLDrawContext((GLControl)_drawPanel, _drawPanel.Size));
         }
 
         // начало движения мыши

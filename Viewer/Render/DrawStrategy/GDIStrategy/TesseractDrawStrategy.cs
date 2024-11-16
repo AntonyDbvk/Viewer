@@ -1,14 +1,17 @@
 ﻿using System.Drawing;
+using System.Runtime.Remoting.Contexts;
 using Viewer.Model.Geometry;
 using Viewer.Model.Shapes;
 using Viewer.Render.Cameras;
+using Viewer.Render.DrawStrategy.DrawContext;
 
 namespace Viewer.Render.DrawStrategy.GDIStrategy
 {
     public class TesseractDrawStrategy : ShapeDrawStrategy
     {
-        public override void Draw(Graphics g, Shape3D model, DrawingSettings settings, GDICamera gdiCamera, Size clientSize, bool isOrthogonal)
+        public override void Draw(IDrawContext context, Shape3D model, DrawingSettings settings, CameraBase gdiCamera, bool isOrthogonal)
         {
+            var currentContext = context as GDIDrawContext;
             if (!(model is Tesseract tesseract)) return;
             var outerVertices = tesseract.Vertices;
             var outerEdges = tesseract.Edges;
@@ -16,9 +19,9 @@ namespace Viewer.Render.DrawStrategy.GDIStrategy
             var innerVertices = tesseract.InnerVertices;
             var innerEdges = tesseract.Edges;
 
-            ConnectCubes(g, settings, gdiCamera, outerVertices, innerVertices, clientSize, isOrthogonal);
-            DrawEdges(g, innerVertices, innerEdges, settings.EdgePen1, gdiCamera, clientSize, isOrthogonal);
-            DrawEdges(g, outerVertices, outerEdges, settings.EdgePen2, gdiCamera, clientSize, isOrthogonal);
+            ConnectCubes(currentContext.Graphics, settings, (GDICamera)gdiCamera, outerVertices, innerVertices, currentContext.Size, isOrthogonal);
+            DrawEdges(currentContext.Graphics, innerVertices, innerEdges, settings.EdgePen1, (GDICamera)gdiCamera, currentContext.Size, isOrthogonal);
+            DrawEdges(currentContext.Graphics, outerVertices, outerEdges, settings.EdgePen2, (GDICamera)gdiCamera, currentContext.Size, isOrthogonal);
         }
 
         private void ConnectCubes(Graphics g, DrawingSettings settings, GDICamera gdiCamera, Vertex[] outerVertices, Vertex[] innerVertices, Size clientSize, bool isOrthogonal)

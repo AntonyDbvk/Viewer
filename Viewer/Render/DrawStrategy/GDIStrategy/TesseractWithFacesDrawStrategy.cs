@@ -1,7 +1,9 @@
 ﻿using System.Drawing;
+using System.Runtime.Remoting.Contexts;
 using Viewer.Model.Geometry;
 using Viewer.Model.Shapes;
 using Viewer.Render.Cameras;
+using Viewer.Render.DrawStrategy.DrawContext;
 using Viewer.Render.DrawStrategy.GDIStrategy.Base;
 using Viewer.Render.DrawStrategy.OpenGlStrategy.Base;
 
@@ -9,8 +11,9 @@ namespace Viewer.Render.DrawStrategy.GDIStrategy
 {
     public class TesseractWithFacesDrawStrategy : FaceDrawStrategyBase
     {
-        public override void Draw(Graphics g, Shape3D model, DrawingSettings settings, GDICamera gdiCamera, Size clientSize, bool isOrthogonal)
+        public override void Draw(IDrawContext context, Shape3D model, DrawingSettings settings, CameraBase gdiCamera, bool isOrthogonal)
         {
+            var currentContext = context as GDIDrawContext;
             if (!(model is Tesseract tesseract)) return;
 
             var outerVertices = tesseract.Vertices;
@@ -19,13 +22,13 @@ namespace Viewer.Render.DrawStrategy.GDIStrategy
             var innerEdges = tesseract.Edges;
             var faces = tesseract.Faces;
 
-            ConnectCubes(g, settings, gdiCamera, outerVertices, innerVertices, clientSize, isOrthogonal);
+            ConnectCubes(currentContext.Graphics, settings, (GDICamera)gdiCamera, outerVertices, innerVertices, currentContext.Size, isOrthogonal);
 
-            DrawFaces(g, innerVertices, faces, settings.FaceBrush1, gdiCamera, clientSize, isOrthogonal);
-            DrawEdges(g, innerVertices, innerEdges, settings.EdgePen1, gdiCamera, clientSize, isOrthogonal);
+            DrawFaces(currentContext.Graphics, innerVertices, faces, settings.FaceBrush1, (GDICamera)gdiCamera, currentContext.Size, isOrthogonal);
+            DrawEdges(currentContext.Graphics, innerVertices, innerEdges, settings.EdgePen1, (GDICamera)gdiCamera, currentContext.Size, isOrthogonal);
 
-            DrawFaces(g, outerVertices, faces, settings.FaceBrush2, gdiCamera, clientSize, isOrthogonal);
-            DrawEdges(g, outerVertices, outerEdges, settings.EdgePen2, gdiCamera, clientSize, isOrthogonal);
+            DrawFaces(currentContext.Graphics, outerVertices, faces, settings.FaceBrush2, (GDICamera)gdiCamera, currentContext.Size, isOrthogonal);
+            DrawEdges(currentContext.Graphics, outerVertices, outerEdges, settings.EdgePen2, (GDICamera)gdiCamera, currentContext.Size, isOrthogonal);
 
         }
 
