@@ -1,5 +1,4 @@
 ﻿using Viewer.Model.Geometry;
-using Viewer.Model.Geometry;
 
 namespace Viewer.Model.Shapes
 {
@@ -7,14 +6,14 @@ namespace Viewer.Model.Shapes
     {
         public Octahedron()
         {
-            Vertices = new[] 
+            Vertices = new[]
             {
                 new Vertex(0, 1, 0), new Vertex(0, -1, 0),
                 new Vertex(1, 0, 0), new Vertex(-1, 0, 0),
                 new Vertex(0, 0, 1), new Vertex(0, 0, -1)
             };
 
-            Edges = new[] 
+            Edges = new[]
             {
                 new Edge(0, 2), new Edge(0, 3), new Edge(0, 4), new Edge(0, 5),
                 new Edge(1, 2), new Edge(1, 3), new Edge(1, 4), new Edge(1, 5),
@@ -30,7 +29,7 @@ namespace Viewer.Model.Shapes
                 new Face(1, 2, 5),
                 new Face(1, 5, 3),
                 new Face(1, 3, 4),
-                new Face(1, 4, 2) 
+                new Face(1, 4, 2)
             };
         }
     }

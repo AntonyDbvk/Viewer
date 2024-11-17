@@ -1,5 +1,4 @@
 ﻿using System.Drawing;
-using System.Runtime.Remoting.Contexts;
 using Viewer.Model.Geometry;
 using Viewer.Model.Shapes;
 using Viewer.Render.Cameras;

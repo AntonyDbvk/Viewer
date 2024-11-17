@@ -1,6 +1,5 @@
-﻿using System;
-using OpenTK;
-using OpenTK.Graphics.OpenGL;
+﻿using OpenTK;
+using System;
 
 namespace Viewer.Render.Cameras
 {
@@ -17,8 +16,8 @@ namespace Viewer.Render.Cameras
         {
             var cameraPosition = new Vector3(
                 Distance * (float)Math.Cos(AngleX) * (float)Math.Cos(AngleY),
-                Distance * (float)Math.Sin(AngleX),  
-                Distance * (float)Math.Cos(AngleX) * (float)Math.Sin(AngleY)  
+                Distance * (float)Math.Sin(AngleX),
+                Distance * (float)Math.Cos(AngleX) * (float)Math.Sin(AngleY)
             );
             var targetPosition = Vector3.Zero;
             var upDirection = -Vector3.UnitY;
@@ -37,7 +36,7 @@ namespace Viewer.Render.Cameras
                 );
             }
 
-            float scale = 1f + Distance * 0.1f; 
+            float scale = 1f + Distance * 0.1f;
             float orthoSize = (Distance / 2f) * scale;
             return Matrix4.CreateOrthographic(
                 orthoSize * aspectRatio,

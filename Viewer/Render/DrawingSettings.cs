@@ -11,9 +11,9 @@ namespace Viewer.Render
         private DrawingSettings()
         {
             EdgePen1 = new Pen(Color.Black, 3);
-            EdgePen2 = new Pen(Color.Black, 3); 
-            FaceBrush1 = new SolidBrush(Color.FromArgb(0,0,0,0)); 
-            FaceBrush2 = new SolidBrush(Color.FromArgb(0, 0, 0, 0)); 
+            EdgePen2 = new Pen(Color.Black, 3);
+            FaceBrush1 = new SolidBrush(Color.FromArgb(0, 0, 0, 0));
+            FaceBrush2 = new SolidBrush(Color.FromArgb(0, 0, 0, 0));
         }
 
         public static DrawingSettings Instance { get; } = new DrawingSettings();

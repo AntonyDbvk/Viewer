@@ -1,12 +1,10 @@
-﻿using System;
+﻿using OpenTK;
+using OpenTK.Graphics.OpenGL;
+using System;
 using System.ComponentModel;
 using System.Drawing;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
-using OpenTK;
-using OpenTK.Graphics.OpenGL;
-using Viewer.Render;
 using Viewer.Render.Cameras;
 using Viewer.Render.DrawStrategy.DrawContext;
 using Viewer.Resources.Localization;
@@ -80,7 +78,7 @@ namespace Viewer
             _gdiRenderMenuItem.Checked = true;
             _openGlRenderMenuItem.Checked = false;
             _viewModel.Camera = new GDICamera(_viewModel.Camera);
-            ReplaceDrawPanel(new BufferedPanel(), OnGDIPaint,OnGDIResize);
+            ReplaceDrawPanel(new BufferedPanel(), OnGDIPaint, OnGDIResize);
         }
 
         private void InitOpenGlDrawPanel()
@@ -88,7 +86,7 @@ namespace Viewer
             _gdiRenderMenuItem.Checked = false;
             _openGlRenderMenuItem.Checked = true;
             _viewModel.Camera = new OpenGLCamera(_viewModel.Camera);
-            ReplaceDrawPanel(new GLControl(), OnOpenGLPaint,OnOpenGlResize);
+            ReplaceDrawPanel(new GLControl(), OnOpenGLPaint, OnOpenGlResize);
             GL.Enable(EnableCap.DepthTest);
             Color backgroundColor = SystemColors.Control;
             GL.ClearColor(
@@ -122,8 +120,8 @@ namespace Viewer
             _languageMenuItem.DropDownItems.Add(englishMenuItem);
 
             _renderMenuItem = new ToolStripMenuItem(_localizer.GetString("DrawingMethod"));
-             _gdiRenderMenuItem = new ToolStripMenuItem("GDI+", null, (s, e) => InitGdiDrawPanel());
-             _openGlRenderMenuItem = new ToolStripMenuItem("OpenGl", null, (s, e) => InitOpenGlDrawPanel());
+            _gdiRenderMenuItem = new ToolStripMenuItem("GDI+", null, (s, e) => InitGdiDrawPanel());
+            _openGlRenderMenuItem = new ToolStripMenuItem("OpenGl", null, (s, e) => InitOpenGlDrawPanel());
             _renderMenuItem.DropDownItems.Add(_gdiRenderMenuItem);
             _renderMenuItem.DropDownItems.Add(_openGlRenderMenuItem);
 
@@ -379,7 +377,7 @@ namespace Viewer
         private void OnGDIPaint(object sender, PaintEventArgs e)
         {
             e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias; // сглаживание при отрисовке
-            _viewModel.Draw(new GDIDrawContext(e.Graphics,_drawPanel.Size));
+            _viewModel.Draw(new GDIDrawContext(e.Graphics, _drawPanel.Size));
         }
 
         private void OnOpenGLPaint(object sender, PaintEventArgs e)
@@ -448,11 +446,7 @@ namespace Viewer
             Properties.Settings.Default.Save();
         }
 
-
         //-----------------ПРОЧИЕ_МЕТОДЫ-----------------
-
-
-
 
         private void UpdateSlidersBasedOnSelection()
         {
@@ -516,7 +510,7 @@ namespace Viewer
         }
 
 
-        private void ReplaceDrawPanel(Control newPanel, PaintEventHandler paintHandler,EventHandler resizeHandler)
+        private void ReplaceDrawPanel(Control newPanel, PaintEventHandler paintHandler, EventHandler resizeHandler)
         {
             if (_drawPanel != null)
             {

@@ -1,11 +1,9 @@
 ﻿using System.Drawing;
-using System.Runtime.Remoting.Contexts;
 using Viewer.Model.Geometry;
 using Viewer.Model.Shapes;
 using Viewer.Render.Cameras;
 using Viewer.Render.DrawStrategy.DrawContext;
 using Viewer.Render.DrawStrategy.GDIStrategy.Base;
-using Viewer.Render.DrawStrategy.OpenGlStrategy.Base;
 
 namespace Viewer.Render.DrawStrategy.GDIStrategy
 {

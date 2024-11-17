@@ -1,10 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Drawing;
-using OpenTK;
-using OpenTK.Graphics.OpenGL;
-using Viewer.Model.Geometry;
-using Viewer.Model.Shapes;
-using Viewer.Render.Cameras;
+﻿using Viewer.Model.Shapes;
 using Viewer.Render.DrawStrategy.OpenGlStrategy.Base;
 
 namespace Viewer.Render.DrawStrategy.OpenGlStrategy

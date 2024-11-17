@@ -1,6 +1,6 @@
 ﻿using OpenTK;
-using System.Drawing;
 using OpenTK.Graphics.OpenGL;
+using System.Drawing;
 using Viewer.Model.Geometry;
 using Viewer.Model.Shapes;
 using Viewer.Render.Cameras;
@@ -16,7 +16,7 @@ namespace Viewer.Render.DrawStrategy.OpenGlStrategy.Base
         {
             var currentContext = context as OpenGLDrawContext;
             var glControl = currentContext.GLControl;
-            var openGlCamera = camera as OpenGLCamera; 
+            var openGlCamera = camera as OpenGLCamera;
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             Matrix4 projectionMatrix = openGlCamera.GetProjectionMatrix((float)glControl.Width / glControl.Height, isOrthogonal);
             GL.MatrixMode(MatrixMode.Projection);

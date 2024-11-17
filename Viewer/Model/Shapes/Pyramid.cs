@@ -1,5 +1,4 @@
 ﻿using Viewer.Model.Geometry;
-using Viewer.Model.Geometry;
 
 namespace Viewer.Model.Shapes
 {
@@ -21,11 +20,11 @@ namespace Viewer.Model.Shapes
 
             Faces = new[]
             {
-                new Face(0, 1, 2), 
+                new Face(0, 1, 2),
                 new Face(0, 2, 3),
-                new Face(0, 3, 4), 
+                new Face(0, 3, 4),
                 new Face(0, 4, 1),
-                new Face(1, 2, 3, 4) 
+                new Face(1, 2, 3, 4)
             };
         }
     }

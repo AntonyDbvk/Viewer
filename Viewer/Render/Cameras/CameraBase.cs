@@ -18,7 +18,7 @@ namespace Viewer.Render.Cameras
             AngleY = 0;
         }
 
-        public  CameraBase(CameraBase camera)
+        public CameraBase(CameraBase camera)
         {
             Distance = camera.Distance;
             AngleX = camera.AngleX;

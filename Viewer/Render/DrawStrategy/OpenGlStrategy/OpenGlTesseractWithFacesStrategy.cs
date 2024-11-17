@@ -1,5 +1,5 @@
-﻿using System.Drawing;
-using OpenTK.Graphics.OpenGL;
+﻿using OpenTK.Graphics.OpenGL;
+using System.Drawing;
 using Viewer.Model.Geometry;
 using Viewer.Model.Shapes;
 using Viewer.Render.DrawStrategy.OpenGlStrategy.Base;
@@ -22,7 +22,7 @@ namespace Viewer.Render.DrawStrategy.OpenGlStrategy
             DrawFaces(tesseract.Faces, tesseract.Vertices, settings.FaceBrush2.Color);
         }
 
-        protected void ConnectCubes(Vertex[] outerVertices, Vertex[] innerVertices, Color color)
+        private void ConnectCubes(Vertex[] outerVertices, Vertex[] innerVertices, Color color)
         {
             GL.LineWidth(3.0f);
             GL.Color4(color.R / 255f, color.G / 255f, color.B / 255f, 1.0f);

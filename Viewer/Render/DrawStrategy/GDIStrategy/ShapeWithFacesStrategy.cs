@@ -1,5 +1,4 @@
-﻿using System.Drawing;
-using Viewer.Model.Shapes;
+﻿using Viewer.Model.Shapes;
 using Viewer.Render.Cameras;
 using Viewer.Render.DrawStrategy.DrawContext;
 using Viewer.Render.DrawStrategy.GDIStrategy.Base;

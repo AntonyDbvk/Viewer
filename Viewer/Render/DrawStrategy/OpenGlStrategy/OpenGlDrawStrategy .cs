@@ -1,7 +1,4 @@
-﻿using OpenTK;
-using OpenTK.Graphics.OpenGL;
-using Viewer.Model.Shapes;
-using Viewer.Render.Cameras;
+﻿using Viewer.Model.Shapes;
 using Viewer.Render.DrawStrategy.OpenGlStrategy.Base;
 
 namespace Viewer.Render.DrawStrategy.OpenGlStrategy

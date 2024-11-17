@@ -1,16 +1,10 @@
-﻿using OpenTK;
-using System.Drawing;
-using OpenTK.Graphics.OpenGL;
-using Viewer.Model.Shapes;
+﻿using Viewer.Model.Shapes;
 using Viewer.Render.Cameras;
 using Viewer.Render.DrawStrategy;
+using Viewer.Render.DrawStrategy.DrawContext;
 using Viewer.Render.DrawStrategy.GDIStrategy;
 using Viewer.Render.DrawStrategy.GDIStrategy.Base;
 using Viewer.Render.DrawStrategy.OpenGlStrategy;
-using System;
-using System.Windows.Forms;
-using Viewer.Render.DrawStrategy.DrawContext;
-using Viewer.Render.DrawStrategy.OpenGlStrategy.Base;
 
 namespace Viewer.Render
 {
@@ -18,8 +12,6 @@ namespace Viewer.Render
     {
         private readonly DrawingSettings _drawingSettings;
         private IDrawStrategy _drawStrategy;
-        private DrawStrategyType _currentDrawStrategyType;
-        private Type _currentShapeType;
 
         public Renderer()
         {
@@ -59,13 +51,10 @@ namespace Viewer.Render
                     ? (IDrawStrategy)new OpenGlTesseractWithFacesStrategy()
                     : new OpenGlTesseractStrategy();
             }
-
             return drawStrategyType == DrawStrategyType.WithFaces
                 ? (IDrawStrategy)new OpenGlShapeWithFacesStrategy()
                 : new OpenGlShapeDrawStrategy();
         }
-
-
     }
 
 }

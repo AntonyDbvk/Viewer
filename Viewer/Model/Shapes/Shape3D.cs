@@ -1,5 +1,4 @@
 ﻿using Viewer.Model.Geometry;
-using Viewer.Model.Geometry;
 
 namespace Viewer.Model.Shapes
 {

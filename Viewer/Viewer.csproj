@@ -77,7 +77,7 @@
     <Compile Include="Model\Shapes\Octahedron.cs" />
     <Compile Include="Model\Shapes\Pyramid.cs" />
     <Compile Include="Model\Shapes\Shape3D.cs" />
-    <Compile Include="Render\DrawStrategy\GDIStrategy\Base\IDrawStrategy.cs" />
+    <Compile Include="Render\DrawStrategy\IDrawStrategy.cs" />
     <Compile Include="Render\DrawStrategy\GDIStrategy\ShapeDrawStrategy.cs" />
     <Compile Include="Render\DrawStrategy\GDIStrategy\ShapeWithFacesStrategy.cs" />
     <Compile Include="Render\DrawStrategy\GDIStrategy\TesseractDrawStrategy.cs" />

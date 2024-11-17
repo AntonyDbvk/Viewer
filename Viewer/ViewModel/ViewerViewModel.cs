@@ -1,6 +1,4 @@
-﻿using OpenTK;
-using System.Drawing;
-using Viewer.Model.Shapes;
+﻿using Viewer.Model.Shapes;
 using Viewer.Render;
 using Viewer.Render.Cameras;
 using Viewer.Render.DrawStrategy.DrawContext;
@@ -89,7 +87,7 @@ namespace Viewer.ViewModel
         /// </summary>
         public void Draw(IDrawContext context)
         {
-            _renderer.DrawShape(context, CurrentShape,Camera, IsOrthogonal, _currentDrawStrategy);
+            _renderer.DrawShape(context, CurrentShape, Camera, IsOrthogonal, _currentDrawStrategy);
         }
 
 

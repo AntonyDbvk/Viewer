@@ -21,7 +21,7 @@ namespace Viewer.Resources.Localization
         public static Localizer Instance(string baseName, Assembly assembly)
         {
             if (_instance != null) return _instance;
-            lock (Lock) 
+            lock (Lock)
             {
                 if (_instance == null)
                 {
